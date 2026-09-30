@@ -1,0 +1,14 @@
+soc_code,occupation_title,short_label,emp_2023,emp_2033,change_num,change_pct,openings_annual,median_annual_wage_2023,data_source,source_url
+15-1211,Computer Systems Analysts,Comp Systems Anal.,614200,663100,48900,8.0,58600,103800,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1212,Information Security Analysts,Info Security,168900,223500,54600,32.3,16800,120360,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1221,Computer and Information Research Scientists,CS Research Sci.,35900,45200,9300,25.9,4400,145080,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1242,Database Administrators,Database Admin.,103100,111600,8500,8.2,10800,101860,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1243,Database Architects,Database Architects,70500,86800,16300,23.1,9300,128040,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1244,Network and Computer Systems Architects,Network Architects,171700,179400,7700,4.5,16700,126900,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1251,Computer Programmers,Comp Programmers,152500,136200,-16300,-10.7,9200,99700,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1252,Software Developers,Software Developers,1847900,2167500,319600,17.3,230200,130160,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1253,Software QA Analysts and Testers,Software QA,218200,279600,61400,28.1,28500,101700,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1254,Web Developers,Web Developers,184800,215000,30200,16.3,21800,80730,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1255,Web and Digital Interface Designers,Web/UI Designers,223800,242400,18600,8.3,24400,85490,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1256,Data Scientists,Data Scientists,186900,252500,65600,35.1,20800,108020,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm
+15-1299,"Computer Occupations, All Other","Comp Occ., Other",376200,392400,16200,4.3,43100,100560,"BLS Employment Projections 2023-33, Table 1.3 (Sep 2024)",https://www.bls.gov/emp/tables/emp-by-detailed-occupation.htm

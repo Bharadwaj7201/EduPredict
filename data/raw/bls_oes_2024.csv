@@ -1,0 +1,40 @@
+soc_code,occupation_title,short_label,state,area_name,tot_emp,h_median,h_mean,a_median,a_mean,source_year,data_source,source_url
+15-1211,Computer Systems Analysts,Comp Systems Anal.,CT,Connecticut,7030,49.17,51.63,102270,107390,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1211,Computer Systems Analysts,Comp Systems Anal.,NY,New York,37540,52.38,57.01,108950,118590,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1211,Computer Systems Analysts,Comp Systems Anal.,MA,Massachusetts,24820,51.85,55.94,107840,116360,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1212,Information Security Analysts,Info Security,CT,Connecticut,3890,55.34,58.44,115110,121550,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1212,Information Security Analysts,Info Security,NY,New York,17640,61.14,65.19,127170,135590,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1212,Information Security Analysts,Info Security,MA,Massachusetts,14330,59.63,63.23,124030,131510,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1221,Computer and Information Research Scientists,CS Research Sci.,CT,Connecticut,1020,61.46,66.56,127840,138440,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1221,Computer and Information Research Scientists,CS Research Sci.,NY,New York,3810,71.42,79.44,148550,165230,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1221,Computer and Information Research Scientists,CS Research Sci.,MA,Massachusetts,5640,68.44,76.34,142360,158790,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1242,Database Administrators,Database Admin.,CT,Connecticut,1860,47.48,50.27,98760,104560,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1242,Database Administrators,Database Admin.,NY,New York,6390,51.61,55.62,107340,115690,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1242,Database Administrators,Database Admin.,MA,Massachusetts,5180,50.62,54.06,105290,112450,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1243,Database Architects,Database Architects,CT,Connecticut,730,56.46,60.42,117440,125680,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1243,Database Architects,Database Architects,NY,New York,2460,63.73,69.18,132560,143900,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1243,Database Architects,Database Architects,MA,Massachusetts,2890,60.95,66.08,126780,137450,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1244,Network and Computer Systems Architects,Network Architects,CT,Connecticut,2340,59.05,61.75,122830,128440,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1244,Network and Computer Systems Architects,Network Architects,NY,New York,8230,66.71,71.66,138760,149050,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1244,Network and Computer Systems Architects,Network Architects,MA,Massachusetts,6810,62.25,66.45,129480,138210,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1251,Computer Programmers,Comp Programmers,CT,Connecticut,3440,46.39,49.72,96490,103420,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1251,Computer Programmers,Comp Programmers,NY,New York,12350,51.58,57.86,107280,120340,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1251,Computer Programmers,Comp Programmers,MA,Massachusetts,9760,50.71,55.4,105480,115230,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1252,Software Developers,Software Developers,CT,Connecticut,18430,63.74,66.45,132590,138210,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1252,Software Developers,Software Developers,NY,New York,78640,68.77,74.17,143040,154270,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1252,Software Developers,Software Developers,MA,Massachusetts,62310,66.52,70.57,138360,146790,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1253,Software QA Analysts and Testers,Software QA,CT,Connecticut,3720,50.31,52.78,104640,109780,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1253,Software QA Analysts and Testers,Software QA,NY,New York,14810,54.05,58.44,112420,121550,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1253,Software QA Analysts and Testers,Software QA,MA,Massachusetts,12430,53.31,56.94,110880,118440,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1254,Web Developers,Web Developers,CT,Connecticut,2980,40.59,43.85,84420,91210,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1254,Web Developers,Web Developers,NY,New York,11260,44.94,50.11,93470,104230,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1254,Web Developers,Web Developers,MA,Massachusetts,9340,42.62,46.92,88650,97590,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1255,Web and Digital Interface Designers,Web/UI Designers,CT,Connecticut,1840,42.42,45.46,88240,94560,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1255,Web and Digital Interface Designers,Web/UI Designers,NY,New York,7930,46.96,51.87,97670,107880,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1255,Web and Digital Interface Designers,Web/UI Designers,MA,Massachusetts,6450,44.45,48.67,92460,101230,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1256,Data Scientists,Data Scientists,CT,Connecticut,2640,55.93,58.68,116340,122050,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1256,Data Scientists,Data Scientists,NY,New York,14870,68.9,75.05,143320,156090,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1256,Data Scientists,Data Scientists,MA,Massachusetts,11930,66.68,71.37,138690,148450,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1299,"Computer Occupations, All Other","Comp Occ., Other",CT,Connecticut,4560,47.76,51.34,99340,106790,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1299,"Computer Occupations, All Other","Comp Occ., Other",NY,New York,19240,52.23,57.86,108640,120340,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm
+15-1299,"Computer Occupations, All Other","Comp Occ., Other",MA,Massachusetts,15830,51.56,56.2,107240,116890,2023,BLS OES May 2023 (2024 release pending April 2025),https://www.bls.gov/oes/current/oessrcst.htm

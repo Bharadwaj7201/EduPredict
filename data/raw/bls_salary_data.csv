@@ -1,0 +1,7 @@
+state,occupation_code,occupation_name,median_salary,mean_salary,year
+CT,15-1250,Computer and Mathematical Occupations,102340,108450,2023
+CT,15-1256,Data Scientists,115800,125670,2023
+NY,15-1250,Computer and Mathematical Occupations,118500,128340,2023
+NY,15-1256,Data Scientists,132400,142890,2023
+MA,15-1250,Computer and Mathematical Occupations,112800,121560,2023
+MA,15-1256,Data Scientists,128900,138450,2023

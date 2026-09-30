@@ -1,0 +1,58 @@
+{
+  "bls_salary_data.csv": {
+    "description": "Bureau of Labor Statistics salary data for tech occupations",
+    "fields": {
+      "state": "State abbreviation (CT, NY, MA)",
+      "occupation_code": "BLS SOC code (15-1250 = Computer Occupations, 15-1256 = Data Scientists)",
+      "occupation_name": "Job title/description",
+      "median_salary": "Median annual wage (USD)",
+      "mean_salary": "Mean annual wage (USD)",
+      "year": "Data year (2023)"
+    },
+    "source": "BLS Occupational Employment and Wage Statistics (May 2023)",
+    "url": "https://www.bls.gov/oes/"
+  },
+  "ipeds_institutions.csv": {
+    "description": "List of 4-year institutions in CT, NY, MA",
+    "fields": {
+      "unitid": "IPEDS unique institution identifier",
+      "institution_name": "Official institution name",
+      "state": "State abbreviation",
+      "institution_type": "Public or Private",
+      "sector": "Institution sector (4-year only for MVP)"
+    },
+    "source": "IPEDS Institutional Characteristics",
+    "url": "https://nces.ed.gov/ipeds/"
+  },
+  "ipeds_enrollment_sample.csv": {
+    "description": "Sample AI program enrollment estimates by institution",
+    "fields": {
+      "unitid": "IPEDS unique institution identifier",
+      "institution_name": "Institution name",
+      "state": "State abbreviation",
+      "institution_type": "Public or Private",
+      "program": "Program type (MS in AI, BS in AI, AI in Cybersecurity)",
+      "student_type": "International or Domestic",
+      "estimated_enrollment_2023": "Estimated enrollment count",
+      "year": "Academic year",
+      "data_source": "Source of data (estimated or actual)",
+      "cip_code": "Classification of Instructional Programs code",
+      "note": "Additional notes about the data"
+    },
+    "source": "Estimated based on IPEDS patterns (replace with actual completions data)",
+    "url": "https://nces.ed.gov/ipeds/datacenter/Completions.aspx"
+  },
+  "job_market_data.csv": {
+    "description": "AI/tech job market indicators by state",
+    "fields": {
+      "state": "State abbreviation",
+      "ai_job_growth_5yr": "Projected AI job growth percentage (2023-2028)",
+      "tech_job_growth_5yr": "Projected tech job growth percentage",
+      "demand_level": "Qualitative demand assessment",
+      "open_positions_sample": "Sample count of open AI-related positions",
+      "top_employers": "Major employers hiring for AI roles"
+    },
+    "source": "BLS Employment Projections + industry analysis",
+    "url": "https://www.bls.gov/emp/"
+  }
+}

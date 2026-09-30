@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Streamlit secrets (keep hidden)
+.streamlit/secrets.toml
+
+# But allow Streamlit config
+!.streamlit/config.toml
+
+# Data (keep raw data, ignore processed if needed)
+# data/processed/*.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Flask / local environment
+instance/
+*.db
+.env
+
+
+# Local backups
+*.backup
+
+# Local tooling and backups
+.claude/
+*.backup

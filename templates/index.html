@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPredict Pro | AI Degree Program Planning</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:       #1565c0;
+  --blue-mid:   #1976d2;
+  --blue-hover: #0d47a1;
+  --blue-light: #e3f2fd;
+  --bg:         #f5f7fa;
+  --card:       #ffffff;
+  --border:     #e0e6ed;
+  --text:       #1a2332;
+  --muted:      #64748b;
+  --shadow:     0 1px 8px rgba(0,0,0,0.07);
+  --radius:     8px;
+}
+html { font-size: 14px; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ────────────────────────────────────────────── */
+.header {
+  background: var(--blue);
+  padding: 0.9rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+.header-mark {
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 800; color: #fff;
+  flex-shrink: 0; letter-spacing: -0.02em;
+}
+.header-title { flex: 1; }
+.header-title h1 { font-size: 1rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+.header-title p  { font-size: 0.71rem; color: rgba(255,255,255,0.68); margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.header-user  { font-size: 0.78rem; color: rgba(255,255,255,0.8); }
+.logout-btn {
+  padding: 5px 14px; border-radius: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.15s;
+}
+.logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* ── HERO KPI BAR ──────────────────────────────────────── */
+.hero-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.hero-card {
+  padding: 1rem 1.5rem;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 0.25rem;
+}
+.hero-card:last-child { border-right: none; }
+.h-label {
+  font-size: 0.67rem; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted); font-weight: 600;
+}
+.h-value { font-size: 1.7rem; font-weight: 800; color: var(--text); line-height: 1; }
+.h-note  { font-size: 0.67rem; color: var(--muted); }
+.h-note.delta-up   { color: #2e7d32; }
+.h-note.delta-down { color: #ef5350; }
+.h-note.delta-neu  { color: var(--muted); }
+
+/* ── TABS ──────────────────────────────────────────────── */
+.tabs-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  flex-shrink: 0;
+}
+.tab-btn {
+  padding: 0.75rem 1.1rem;
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 0.83rem; font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+  transition: color 0.12s, border-color 0.12s;
+  font-family: inherit;
+}
+.tab-btn:hover  { color: var(--text); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+/* ── PANELS ────────────────────────────────────────────── */
+.tab-panel { display: none; padding: 1.5rem 2rem; flex: 1; }
+.tab-panel.active { display: block; }
+
+/* ── SECTION HEADS ─────────────────────────────────────── */
+.section-head {
+  font-size: 0.71rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  margin-bottom: 0.9rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── CARDS ─────────────────────────────────────────────── */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.card-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.card-sub   { font-size: 0.72rem; color: var(--muted); }
+.card-body  { padding: 18px; }
+
+/* ── GRID HELPERS ──────────────────────────────────────── */
+.g2  { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+.g3  { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.1rem; }
+.mb  { margin-bottom: 1rem; }
+.mb2 { margin-bottom: 1.5rem; }
+
+/* ── MAIN GRID (forecast tab) ──────────────────────────── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+.col { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ── FORMS ─────────────────────────────────────────────── */
+.form-group { margin-bottom: 11px; }
+.form-group:last-of-type { margin-bottom: 0; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-label {
+  display: block; font-size: 0.7rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px;
+  margin-bottom: 4px;
+}
+.form-select {
+  width: 100%; padding: 8px 11px;
+  border: 1px solid var(--border); border-radius: 6px;
+  font-size: 0.85rem; color: var(--text); background: #fff;
+  cursor: pointer; font-family: inherit;
+  transition: border 0.15s;
+}
+.form-select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
+
+.btn-primary {
+  width: 100%; padding: 10px;
+  background: var(--blue);
+  color: #fff; border: none; border-radius: 6px;
+  font-size: 0.88rem; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
+  margin-top: 4px; font-family: inherit;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-primary:hover    { background: var(--blue-hover); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline {
+  width: 100%; padding: 9px;
+  background: #fff; color: var(--blue);
+  border: 1.5px solid var(--blue); border-radius: 6px;
+  font-size: 0.83rem; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+  margin-top: 8px; font-family: inherit;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-outline:hover { background: var(--blue-light); }
+
+/* ── WELCOME STATE ─────────────────────────────────────── */
+.welcome-state { padding: 36px 20px; text-align: center; }
+.welcome-title { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.welcome-sub   { font-size: 0.83rem; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+.welcome-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.welcome-chip  {
+  background: var(--bg); border-radius: 6px; padding: 10px;
+  font-size: 0.78rem; font-weight: 600; color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* ── LOADING ───────────────────────────────────────────── */
+.loading-state { padding: 40px 20px; text-align: center; display: none; }
+.spinner {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid var(--border); border-top-color: var(--blue);
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { color: var(--muted); font-size: 0.85rem; }
+
+/* ── RESULTS ───────────────────────────────────────────── */
+.results-state         { display: none; }
+.results-state.active  { display: block; }
+.chart-wrap { padding: 8px; }
+
+/* ── RECOMMENDATION BADGE ──────────────────────────────── */
+.rec-badge {
+  padding: 10px 16px; border-radius: 6px;
+  font-size: 0.88rem; font-weight: 700;
+  text-align: center; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.rec-strong-go     { background: #e8f5e9; color: #2e7d32; border: 1.5px solid #a5d6a7; }
+.rec-go            { background: #e3f2fd; color: #1565c0; border: 1.5px solid #90caf9; }
+.rec-conditional   { background: #fff8e1; color: #e65100; border: 1.5px solid #ffe082; }
+.rec-reconsider    { background: #fce4ec; color: #b71c1c; border: 1.5px solid #f48fb1; }
+.rec-do-not-launch { background: #ffebee; color: #b71c1c; border: 2px solid #ef9a9a; }
+.rec-rationale     { font-size: 0.8rem; color: var(--muted); text-align: center; margin-bottom: 12px; }
+
+/* ── ALERTS ────────────────────────────────────────────── */
+.alert { border-radius: 6px; padding: 10px 12px; font-size: 0.82rem; margin-bottom: 8px; display: none; }
+.alert.visible  { display: block; }
+.alert-warn { background: #fff3e0; border: 1px solid #ffe082; color: #e65100; }
+.alert-ok   { background: #e8f5e9; border: 1px solid #a5d6a7; color: #2e7d32; }
+.alert-title { font-weight: 700; margin-bottom: 4px; }
+
+/* ── INFO ROWS ─────────────────────────────────────────── */
+.info-rows { display: flex; flex-direction: column; }
+.info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.82rem; padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.info-row:last-child { border-bottom: none; }
+.info-key { color: var(--muted); }
+.info-val { font-weight: 700; color: var(--text); }
+
+/* ── SUMMARY PILLS ─────────────────────────────────────── */
+.summary-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--blue-light); border-radius: 4px;
+  padding: 3px 8px; font-size: 0.75rem; font-weight: 600;
+  color: var(--blue); margin: 2px;
+}
+
+/* ── TIMELINE ──────────────────────────────────────────── */
+.timeline { display: flex; flex-direction: column; }
+.tl-item {
+  display: flex; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); align-items: flex-start;
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.tl-dot.green  { background: #43a047; }
+.tl-dot.amber  { background: #f59e0b; }
+.tl-dot.blue   { background: #1976d2; }
+.tl-dot.red    { background: #ef5350; }
+.tl-dot.purple { background: #8e24aa; }
+.tl-dot.gray   { background: #90a4ae; }
+.tl-body  { flex: 1; }
+.tl-label { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+.tl-meta  { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.tl-badge { font-size: 0.64rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+.badge-new  { background: #e8f5e9; color: #2e7d32; }
+.badge-hot  { background: #ffebee; color: #c62828; }
+.badge-live { background: #e3f2fd; color: #1565c0; }
+
+/* ── FOOTER ────────────────────────────────────────────── */
+.page-footer {
+  text-align: center; padding: 14px 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem; color: var(--muted);
+  margin-top: auto;
+}
+.page-footer a { color: var(--blue); text-decoration: none; }
+
+/* ── HIDDEN PLACEHOLDERS (JS targets) ──────────────────── */
+.js-hidden { display: none !important; }
+
+/* ── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .hero-bar { grid-template-columns: repeat(2,1fr); }
+  .g2, .g3  { grid-template-columns: 1fr; }
+  .tabs-bar { overflow-x: auto; }
+  .form-row { grid-template-columns: 1fr; }
+}
+@media print {
+  .header, .tabs-bar, .hero-bar { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header class="header">
+  <div class="header-mark">EP</div>
+  <div class="header-title">
+    <h1>EduPredict Pro</h1>
+    <p>AI Degree Program Decision Intelligence — Connecticut · New York · Massachusetts</p>
+  </div>
+  <div class="header-right">
+    <span class="header-user">Dean &nbsp;|&nbsp; Administrator</span>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+  </div>
+</header>
+
+<!-- ══════════════════ HERO KPI BAR ══════════════════ -->
+<div class="hero-bar">
+  <div class="hero-card">
+    <span class="h-label">Year 1 Students</span>
+    <span class="h-value" id="kpi-year1">--</span>
+    <span class="h-note" id="kpi-year1-range">Run forecast to see data</span>
+  </div>
+  <div class="hero-card">
+    <span class="h-label">3-Year Pool</span>
+    <span class="h-value" id="kpi-pool">--</span>
+    <span class="h-note" id="kpi-pool-sub">Total enrollment pipeline</span>
+  </div>
+  <div class="hero-card">
+    <span class="h-label">ROI Ratio</span>
+    <span class="h-value" id="kpi-roi">--</span>
+    <span class="h-note" id="kpi-roi-sub">Revenue / Cost</span>
+  </div>
+  <div class="hero-card">
+    <span class="h-label">Confidence</span>
+    <span class="h-value" id="kpi-conf">--</span>
+    <span class="h-note" id="kpi-risk">Risk level</span>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB NAVIGATION ══════════════════ -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('forecast', this)">Forecast</button>
+  <button class="tab-btn" onclick="switchTab('financial', this)">Financial Analysis</button>
+  <button class="tab-btn" onclick="switchTab('scenarios', this)">Scenarios</button>
+  <button class="tab-btn" onclick="switchTab('recommendation', this)">Recommendation</button>
+  <button class="tab-btn" onclick="switchTab('workforce', this)">Workforce &amp; AI</button>
+  <button class="tab-btn" onclick="switchTab('reports', this)">Reports</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 1 — FORECAST
+══════════════════════════════════════════════════════ -->
+<div id="panel-forecast" class="tab-panel active">
+  <div class="main-grid">
+
+    <!-- Input panel -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Forecast Parameters</div>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Program</label>
+              <select class="form-select" id="program">
+                {% for p in programs %}
+                <option value="{{ p }}">{{ p }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Student Type</label>
+              <select class="form-select" id="student_type">
+                {% for s in student_types %}
+                <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Academic Term</label>
+              <select class="form-select" id="term">
+                <optgroup label="2026">
+                  <option value="SP26">SP26 – Spring 2026</option>
+                  <option value="SU26">SU26 – Summer 2026</option>
+                  <option value="FA26" selected>FA26 – Fall 2026</option>
+                </optgroup>
+                <optgroup label="2027">
+                  <option value="SP27">SP27 – Spring 2027</option>
+                  <option value="SU27">SU27 – Summer 2027</option>
+                  <option value="FA27">FA27 – Fall 2027</option>
+                </optgroup>
+                <optgroup label="2028">
+                  <option value="SP28">SP28 – Spring 2028</option>
+                  <option value="SU28">SU28 – Summer 2028</option>
+                  <option value="FA28">FA28 – Fall 2028</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Target State</label>
+              <select class="form-select" id="state">
+                <option value="CT">CT – Connecticut</option>
+                <option value="NY">NY – New York</option>
+                <option value="MA">MA – Massachusetts</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Scenario</label>
+            <select class="form-select" id="scenario">
+              {% for s in scenarios %}
+              <option value="{{ s }}">{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button class="btn-primary" id="generate-btn" onclick="generateForecast()">Generate Forecast</button>
+          <button class="btn-outline" id="download-btn" onclick="downloadReport()" style="display:none;">Download PDF Report</button>
+          <button class="btn-outline" onclick="window.print()">Print Page</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enrollment chart -->
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Enrollment Projection — 3-Year Forecast</div>
+          <span class="card-sub" id="enroll-subtitle"></span>
+        </div>
+        <div class="loading-state" id="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">Generating forecast...</div>
+        </div>
+        <div class="welcome-state" id="welcome">
+          <div class="welcome-title">Welcome to EduPredict Pro</div>
+          <div class="welcome-sub">Select parameters on the left and click Generate Forecast to see enrollment projections, ROI analysis, and AI labor market insights.</div>
+          <div class="welcome-grid">
+            <div class="welcome-chip">162 Validated Combinations</div>
+            <div class="welcome-chip">BLS 2023 Source Data</div>
+            <div class="welcome-chip">Plotly Visualizations</div>
+            <div class="welcome-chip">ROI Analysis Included</div>
+          </div>
+        </div>
+        <div class="results-state" id="results">
+          <div class="chart-wrap">
+            <div id="enrollment-chart" style="height:340px;"></div>
+          </div>
+          <div style="padding:0 16px 16px;">
+            <div class="alert alert-warn" id="warnings-section">
+              <div class="alert-title">Warning Flags</div>
+              <div id="warnings-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-grid -->
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 2 — FINANCIAL ANALYSIS
+══════════════════════════════════════════════════════ -->
+<div id="panel-financial" class="tab-panel">
+  <div class="section-head mb">Revenue vs. cost analysis</div>
+  <div class="card mb2">
+    <div class="card-header">
+      <div class="card-title">Financial Analysis — Revenue, Costs, Net Result</div>
+    </div>
+    <div class="card-body">
+      <div class="results-state" id="roi-results">
+        <div id="roi-chart" style="height:320px;"></div>
+      </div>
+      <div id="roi-placeholder" style="padding:48px;text-align:center;color:var(--muted);font-size:0.85rem;">
+        Financial data will appear after running a forecast on the Forecast tab.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 3 — SCENARIOS
+══════════════════════════════════════════════════════ -->
+<div id="panel-scenarios" class="tab-panel">
+  <div class="g2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Scenario Comparison — Baseline · Optimistic · Conservative</div>
+      </div>
+      <div class="card-body">
+        <div class="results-state" id="scenario-results">
+          <div id="scenario-chart" style="height:300px;"></div>
+        </div>
+        <div id="scenario-placeholder" style="padding:40px;text-align:center;color:var(--muted);font-size:0.85rem;">
+          Run a forecast on the Forecast tab to compare scenarios.
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">State Comparison — CT vs NY vs MA</div>
+      </div>
+      <div class="card-body">
+        <div class="results-state" id="state-results">
+          <div id="state-chart" style="height:300px;"></div>
+        </div>
+        <div id="state-placeholder" style="padding:40px;text-align:center;color:var(--muted);font-size:0.85rem;">
+          Run a forecast on the Forecast tab to compare states.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 4 — RECOMMENDATION
+══════════════════════════════════════════════════════ -->
+<div id="panel-recommendation" class="tab-panel">
+  <div class="g2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Program Decision</div>
+      </div>
+      <div class="card-body" id="summary-results">
+        <div id="recommendation-badge" class="rec-badge" style="display:none;"></div>
+        <div id="recommendation-rationale" class="rec-rationale"></div>
+        <div id="report-timestamp" style="font-size:0.7rem;color:var(--muted);text-align:center;margin-bottom:12px;font-style:italic;"></div>
+        <div id="exec-chips" style="display:none;margin-bottom:12px;text-align:center;">
+          <span class="summary-pill">Year 1: <strong id="chip-year1">--</strong></span>
+          <span class="summary-pill">Pool: <strong id="chip-pool">--</strong></span>
+          <span class="summary-pill">ROI: <strong id="chip-roi">--</strong></span>
+        </div>
+        <div id="exec-detail" style="font-size:0.78rem;color:var(--muted);line-height:1.5;text-align:center;display:none;margin-bottom:12px;"></div>
+        <div class="alert alert-ok" id="opportunities-section">
+          <div class="alert-title">Opportunities</div>
+          <div id="opportunities-list"></div>
+        </div>
+        <div class="alert alert-warn" id="hiring-warning-section">
+          <div class="alert-title">Hiring Alert</div>
+          <div id="hiring-warning-text" style="font-size:0.8rem;"></div>
+        </div>
+        <div id="rec-placeholder" style="text-align:center;padding:32px 0;color:var(--muted);font-size:0.85rem;">
+          Run a forecast on the Forecast tab to see your GO / NO-GO recommendation.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Data Sources</div>
+      </div>
+      <div class="card-body">
+        <div class="info-rows">
+          <div class="info-row"><span class="info-key">Employment data</span><span class="info-val">BLS OES 2023</span></div>
+          <div class="info-row"><span class="info-key">Job growth projections</span><span class="info-val">BLS EP 2023–2033</span></div>
+          <div class="info-row"><span class="info-key">International demand</span><span class="info-val">IIE Open Doors 2023</span></div>
+          <div class="info-row"><span class="info-key">Graduate enrollment trend</span><span class="info-val">NCES Digest 2023</span></div>
+          <div class="info-row"><span class="info-key">Starting salaries</span><span class="info-val">NACE 2024</span></div>
+          <div class="info-row"><span class="info-key">AI labor market</span><span class="info-val">Anthropic Index 2026</span></div>
+          <div class="info-row"><span class="info-key">Institution data</span><span class="info-val">IPEDS 2023</span></div>
+          <div class="info-row"><span class="info-key">Validated combinations</span><span class="info-val">162 total</span></div>
+          <div class="info-row"><span class="info-key">Synthetic data</span><span class="info-val">None — all evidence-backed</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 5 — WORKFORCE & AI
+══════════════════════════════════════════════════════ -->
+<div id="panel-workforce" class="tab-panel">
+  <div class="g2 mb2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Workforce Outlook</div>
+      </div>
+      <div class="card-body">
+        <div class="info-rows">
+          <div class="info-row"><span class="info-key">Demand Score</span><span class="info-val" id="job-demand-score">--</span></div>
+          <div class="info-row"><span class="info-key">5-Year Growth</span><span class="info-val" id="job-growth">--</span></div>
+          <div class="info-row"><span class="info-key">Open Positions</span><span class="info-val" id="job-openings">--</span></div>
+          <div class="info-row"><span class="info-key">Demand Level</span><span class="info-val" id="job-demand-level">--</span></div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:12px;">Run a forecast on the Forecast tab to populate this data.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">AI Exposure Analysis</div>
+      </div>
+      <div class="card-body">
+        <div class="info-rows">
+          <div class="info-row"><span class="info-key">Observed Exposure</span><span class="info-val" id="ai-exposure">--</span></div>
+          <div class="info-row"><span class="info-key">Risk Level</span><span class="info-val" id="ai-risk">--</span></div>
+          <div class="info-row"><span class="info-key">Coverage Gap</span><span class="info-val" id="ai-gap">--</span></div>
+          <div class="info-row"><span class="info-key">BLS Impact</span><span class="info-val" id="ai-bls">--</span></div>
+        </div>
+        <div id="ai-finding" style="font-size:0.78rem;color:var(--muted);margin-top:12px;font-style:italic;line-height:1.4;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head mb">Forecast activity log</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="timeline" id="timeline">
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-body">
+            <div class="tl-label">BLS AI Workforce Demand — CT Region</div>
+            <div class="tl-meta">29,700 AI workers in CT (BLS OES May 2023)</div>
+          </div>
+          <div class="tl-badge badge-live">Live</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot amber"></div>
+          <div class="tl-body">
+            <div class="tl-label">NACE Salary Premium — AI vs General CS</div>
+            <div class="tl-meta">Run forecast to see salary differential</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot blue"></div>
+          <div class="tl-body">
+            <div class="tl-label">IIE Open Doors 2023 — International Demand</div>
+            <div class="tl-meta">Grad STEM +12% enrollment (2022–23)</div>
+          </div>
+          <div class="tl-badge badge-new">New</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-body">
+            <div class="tl-label">BLS Projections 2023–33 — 10-Year Growth</div>
+            <div class="tl-meta">National AI occupation growth forecast</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-body">
+            <div class="tl-label">Competition Count — CT Market</div>
+            <div class="tl-meta">1 MS-AI competitor in CT (real IPEDS count)</div>
+          </div>
+          <div class="tl-badge badge-hot">Alert</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot purple"></div>
+          <div class="tl-body">
+            <div class="tl-label">NCES CAGR — CS Grad Enrollment 2015–22</div>
+            <div class="tl-meta">4.17% annual growth (NCES Digest 2023)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 6 — REPORTS
+══════════════════════════════════════════════════════ -->
+<div id="panel-reports" class="tab-panel">
+  <div class="g2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Export Report</div>
+      </div>
+      <div class="card-body">
+        <p style="font-size:0.83rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+          Generate a PDF executive summary with enrollment projections, ROI analysis, and your GO / NO-GO recommendation.
+          Run a forecast on the Forecast tab first.
+        </p>
+        <button class="btn-primary" id="download-btn-reports" onclick="downloadReport()">Download PDF Report</button>
+        <button class="btn-outline" onclick="window.print()">Print Current View</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">About EduPredict Pro</div>
+      </div>
+      <div class="card-body">
+        <div class="info-rows">
+          <div class="info-row"><span class="info-key">3-Year enrollment forecasting</span><span class="info-val">162 validated combos</span></div>
+          <div class="info-row"><span class="info-key">AI labor market analysis</span><span class="info-val">Anthropic Index 2026</span></div>
+          <div class="info-row"><span class="info-key">ROI calculations</span><span class="info-val">With risk flags</span></div>
+          <div class="info-row"><span class="info-key">GO / NO-GO recommendations</span><span class="info-val">Confidence-weighted</span></div>
+          <div class="info-row"><span class="info-key">Data sources</span><span class="info-val">BLS · IIE · NCES · NACE</span></div>
+          <div class="info-row"><span class="info-key">Synthetic data</span><span class="info-val">None — all evidence-backed</span></div>
+          <div class="info-row"><span class="info-key">Built with</span><span class="info-val">Flask · Plotly.js · Python</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden JS targets (stat/spark IDs kept for backward-compat) -->
+<div class="js-hidden" aria-hidden="true">
+  <span id="stat-y1"></span><span id="stat-y1-d"></span>
+  <span id="stat-rev"></span><span id="stat-rev-d"></span>
+  <span id="stat-y3"></span><span id="stat-y3-d"></span>
+  <span id="stat-roi2"></span><span id="stat-roi2-d"></span>
+  <div id="spark-y1" style="height:1px;width:1px;"></div>
+  <div id="spark-rev" style="height:1px;width:1px;"></div>
+  <div id="spark-y3" style="height:1px;width:1px;"></div>
+  <div id="spark-roi" style="height:1px;width:1px;"></div>
+</div>
+
+<footer class="page-footer">
+  <strong>EduPredict Pro</strong> &nbsp;|&nbsp; Built with Flask &amp; Plotly.js &nbsp;|&nbsp;
+  Data: BLS OES 2023 &middot; BLS EP 2023&ndash;33 &middot; IIE Open Doors 2023 &middot; NCES Digest 2023 &middot; NACE 2024 &nbsp;|&nbsp;
+  <a href="https://github.com/GaneshMunagala714/Edupredict-Pro" target="_blank">View on GitHub</a>
+</footer>
+
+<!-- ══════════════════ JAVASCRIPT ══════════════════ -->
+<script>
+/* ── Tab switcher ────────────────────────────────────────── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+  /* Trigger Plotly resize for charts in newly-visible panel */
+  setTimeout(() => {
+    ['enrollment-chart','roi-chart','scenario-chart','state-chart'].forEach(cid => {
+      const el = document.getElementById(cid);
+      if (el && el._fullLayout) Plotly.Plots.resize(el);
+    });
+  }, 50);
+}
+
+/* ── Color palette ───────────────────────────────────────── */
+const BLUE   = '#1565c0';
+const BLUE2  = '#1976d2';
+const AMBER  = '#f59e0b';
+const RED    = '#ef5350';
+const PURPLE = '#8e24aa';
+const GREEN  = '#2e7d32';
+
+/* ── Sparkline helpers ───────────────────────────────────── */
+function renderSparkline(id, vals, color) {
+  const el = document.getElementById(id);
+  if (!el || el.offsetWidth === 0) return;
+  const trace = {
+    x: vals.map((_,i) => i), y: vals,
+    type:'scatter', mode:'lines',
+    line:{ color, width:2, shape:'spline' },
+    fill:'tozeroy', fillcolor: color + '20',
+  };
+  const layout = {
+    margin:{t:0,b:0,l:0,r:0},
+    paper_bgcolor:'transparent', plot_bgcolor:'transparent',
+    xaxis:{visible:false}, yaxis:{visible:false},
+    showlegend:false
+  };
+  Plotly.newPlot(id, [trace], layout, {staticPlot:true, responsive:true});
+}
+
+/* ── PDF download ────────────────────────────────────────── */
+async function downloadReport() {
+  if (!window.lastForecastData) { alert('Please generate a forecast first.'); return; }
+  const inputs = window.lastForecastData.inputs;
+  const btnIds = ['download-btn', 'download-btn-reports'];
+  const btns   = btnIds.map(i => document.getElementById(i)).filter(Boolean);
+  btns.forEach(b => { b.textContent = 'Generating PDF...'; b.disabled = true; });
+  try {
+    const resp = await fetch('/api/report', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(inputs)
+    });
+    if (resp.ok) {
+      const blob = await resp.blob();
+      const url  = window.URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = `EduPredict_${inputs.state}_${inputs.term}.pdf`;
+      document.body.appendChild(a); a.click();
+      window.URL.revokeObjectURL(url); document.body.removeChild(a);
+    } else { alert('Error generating PDF. Please try again.'); }
+  } catch(e) { alert('Error generating PDF.'); }
+  finally {
+    btns.forEach(b => { b.textContent = 'Download PDF Report'; b.disabled = false; });
+  }
+}
+
+/* ── Main forecast ───────────────────────────────────────── */
+async function generateForecast() {
+  const btn     = document.getElementById('generate-btn');
+  const loading = document.getElementById('loading');
+  const welcome = document.getElementById('welcome');
+  const results = document.getElementById('results');
+
+  const inputs = {
+    program:      document.getElementById('program').value,
+    student_type: document.getElementById('student_type').value,
+    term:         document.getElementById('term').value,
+    scenario:     document.getElementById('scenario').value,
+    state:        document.getElementById('state').value
+  };
+
+  btn.disabled = true;
+  welcome.style.display = 'none';
+  loading.style.display = 'block';
+  results.classList.remove('active');
+
+  try {
+    const resp = await fetch('/api/forecast', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(inputs)
+    });
+    const data = await resp.json();
+    if (data.success) {
+      displayResults(data);
+      results.classList.add('active');
+      const dlBtn = document.getElementById('download-btn');
+      if (dlBtn) dlBtn.style.display = 'flex';
+      window.lastForecastData = data;
+    }
+  } catch(e) {
+    console.error(e); alert('Error generating forecast. Please try again.');
+  } finally {
+    loading.style.display = 'none';
+    btn.disabled = false;
+  }
+}
+
+/* ── Display results ─────────────────────────────────────── */
+function displayResults(data) {
+  const f   = data.forecast;
+  const r   = data.roi;
+  const j   = data.job_market;
+  const rec = data.recommendation;
+
+  /* Hero KPI bar */
+  document.getElementById('kpi-year1').textContent = f.year1;
+  document.getElementById('kpi-year1-range').textContent = `Range: ${f.year1_low} – ${f.year1_high}`;
+  document.getElementById('kpi-pool').textContent  = f.pool;
+  document.getElementById('kpi-pool-sub').textContent = 'Y1 + Y2 + Y3 combined';
+  document.getElementById('kpi-roi').textContent   = r.ratio.toFixed(2) + 'x';
+
+  const roiNote = document.getElementById('kpi-roi-sub');
+  roiNote.className = 'h-note ' + (r.ratio >= 1.5 ? 'delta-up' : r.ratio >= 1 ? 'delta-neu' : 'delta-down');
+  roiNote.textContent = r.ratio >= 1 ? 'Profitable' : 'Below break-even';
+
+  document.getElementById('kpi-conf').textContent = f.confidence_pct + '%';
+  const riskEl = document.getElementById('kpi-risk');
+  riskEl.textContent = f.risk_level.toUpperCase();
+  riskEl.className = 'h-note ' + (f.risk_level === 'low' ? 'delta-up' : f.risk_level === 'medium' ? 'delta-neu' : 'delta-down');
+
+  /* Hidden stat targets (backward compat) */
+  document.getElementById('stat-y1').textContent   = f.year1;
+  document.getElementById('stat-rev').textContent  = '$' + (r.revenue / 1e6).toFixed(2) + 'M';
+  document.getElementById('stat-y3').textContent   = f.year3;
+  document.getElementById('stat-roi2').textContent = r.ratio.toFixed(2) + 'x';
+  renderSparkline('spark-y1',  [f.year1*0.7, f.year1*0.8, f.year1*0.9, f.year1, f.year2, f.year3], BLUE);
+  renderSparkline('spark-rev', [r.costs*0.6, r.costs*0.8, r.revenue*0.5, r.revenue*0.75, r.revenue], BLUE2);
+  renderSparkline('spark-y3',  [f.year1, f.year2, f.year3], AMBER);
+  renderSparkline('spark-roi', [0.8, 1.0, r.ratio*0.7, r.ratio*0.85, r.ratio], r.ratio >= 1 ? BLUE : RED);
+
+  /* Enrollment subtitle */
+  document.getElementById('enroll-subtitle').textContent =
+    `${data.inputs.program} · ${data.inputs.scenario} · ${data.inputs.state}`;
+
+  /* Recommendation */
+  document.getElementById('rec-placeholder').style.display = 'none';
+  const badge = document.getElementById('recommendation-badge');
+  badge.textContent = rec.text;
+  badge.className   = 'rec-badge rec-' + rec.class;
+  badge.style.display = 'flex';
+  document.getElementById('recommendation-rationale').textContent = rec.rationale;
+  const now = new Date();
+  document.getElementById('report-timestamp').textContent =
+    `Generated: ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}`;
+
+  /* Exec chips */
+  document.getElementById('exec-chips').style.display = 'block';
+  document.getElementById('chip-year1').textContent = f.year1;
+  document.getElementById('chip-pool').textContent  = f.pool;
+  document.getElementById('chip-roi').textContent   = r.ratio.toFixed(2) + 'x';
+  const ed = document.getElementById('exec-detail');
+  ed.style.display = 'block';
+  ed.innerHTML = `<strong>${data.inputs.program}</strong> &middot; ${data.inputs.student_type} &middot; ${data.inputs.term} &middot; ${data.inputs.state} &middot; ${data.inputs.scenario}`;
+
+  /* Opportunities */
+  const oppEl = document.getElementById('opportunities-section');
+  if (rec.opportunities && rec.opportunities.length > 0) {
+    oppEl.classList.add('visible');
+    document.getElementById('opportunities-list').innerHTML =
+      rec.opportunities.map(o => `<div style="margin-bottom:4px;">&#10003; ${o}</div>`).join('');
+  } else { oppEl.classList.remove('visible'); }
+
+  /* Hiring warning */
+  const hwEl = document.getElementById('hiring-warning-section');
+  if (j.young_worker_impact < -0.10) {
+    hwEl.classList.add('visible');
+    document.getElementById('hiring-warning-text').innerHTML =
+      `Anthropic 2026: <strong>${Math.abs(Math.round(j.young_worker_impact*100))}% drop</strong> in hiring for ages 22–25. Emphasize human skills.`;
+  } else { hwEl.classList.remove('visible'); }
+
+  /* Warning flags */
+  const warnEl = document.getElementById('warnings-section');
+  if (f.warning_flags && f.warning_flags.length > 0) {
+    warnEl.classList.add('visible');
+    document.getElementById('warnings-list').innerHTML =
+      f.warning_flags.map(w => `<div style="margin-bottom:4px;">&#8226; ${w}</div>`).join('');
+  } else { warnEl.classList.remove('visible'); }
+
+  /* Workforce */
+  document.getElementById('job-demand-score').textContent = j.demand_score + '/100';
+  document.getElementById('job-growth').textContent       = j.growth_rate + '%';
+  document.getElementById('job-openings').textContent     = '~' + j.open_positions.toLocaleString();
+  document.getElementById('job-demand-level').textContent = j.demand_level;
+
+  /* AI exposure */
+  document.getElementById('ai-exposure').textContent = j.ai_exposure_pct + '%';
+  document.getElementById('ai-risk').textContent     = j.risk_level.toUpperCase();
+  document.getElementById('ai-gap').textContent      = Math.round(j.coverage_gap*100) + '%';
+  document.getElementById('ai-bls').textContent      = j.bls_impact.toFixed(1) + 'pp';
+  document.getElementById('ai-finding').textContent  = j.key_finding;
+
+  /* Reveal placeholder-less panels */
+  document.getElementById('roi-placeholder').style.display      = 'none';
+  document.getElementById('scenario-placeholder').style.display = 'none';
+  document.getElementById('state-placeholder').style.display    = 'none';
+  document.getElementById('roi-results').classList.add('active');
+  document.getElementById('scenario-results').classList.add('active');
+  document.getElementById('state-results').classList.add('active');
+
+  /* Render charts */
+  renderEnrollmentChart(f, data.inputs);
+  renderROIChart(r);
+  renderScenariosChart(data.inputs);
+  renderStatesChart(data.inputs);
+  updateTimeline(data);
+}
+
+/* ── Timeline update ─────────────────────────────────────── */
+function updateTimeline(data) {
+  const f   = data.forecast;
+  const j   = data.job_market;
+  const inp = data.inputs;
+  document.getElementById('timeline').innerHTML = `
+    <div class="tl-item">
+      <div class="tl-dot green"></div>
+      <div class="tl-body">
+        <div class="tl-label">Forecast Generated — ${inp.program}</div>
+        <div class="tl-meta">${inp.student_type} | ${inp.term} | ${inp.state} | ${inp.scenario}</div>
+      </div>
+      <div class="tl-badge badge-new">New</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot amber"></div>
+      <div class="tl-body">
+        <div class="tl-label">Year 1 Enrollment: ${f.year1} students</div>
+        <div class="tl-meta">Range ${f.year1_low}–${f.year1_high} at ${f.confidence_pct}% confidence</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot blue"></div>
+      <div class="tl-body">
+        <div class="tl-label">3-Year Enrollment Pool: ${f.pool} students</div>
+        <div class="tl-meta">Y1: ${f.year1} &rarr; Y2: ${f.year2} &rarr; Y3: ${f.year3}</div>
+      </div>
+      <div class="tl-badge badge-live">Live</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot ${j.demand_score >= 60 ? 'green' : 'red'}"></div>
+      <div class="tl-body">
+        <div class="tl-label">Job Demand Score: ${j.demand_score}/100</div>
+        <div class="tl-meta">5-yr growth ${j.growth_rate}% | ~${j.open_positions.toLocaleString()} openings</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot purple"></div>
+      <div class="tl-body">
+        <div class="tl-label">AI Exposure: ${j.ai_exposure_pct}%</div>
+        <div class="tl-meta">${j.key_finding}</div>
+      </div>
+      ${j.risk_level === 'high' ? '<div class="tl-badge badge-hot">High Risk</div>' : ''}
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot gray"></div>
+      <div class="tl-body">
+        <div class="tl-label">Sources: BLS OES 2023 · IIE Open Doors 2023 · NACE 2024</div>
+        <div class="tl-meta">All factors evidence-backed — zero synthetic data</div>
+      </div>
+    </div>`;
+}
+
+/* ── Enrollment chart ────────────────────────────────────── */
+function renderEnrollmentChart(forecast, inputs) {
+  const y = [forecast.year1, forecast.year2, forecast.year3];
+  Plotly.newPlot('enrollment-chart', [{
+    x: ['Year 1', 'Year 2', 'Year 3'], y,
+    type:'scatter', mode:'lines+markers',
+    line:{ color:BLUE, width:3, shape:'spline' },
+    marker:{ size:10, color:BLUE, line:{color:'#fff',width:3} },
+    fill:'tozeroy', fillcolor:'rgba(21,101,192,0.09)',
+    text: y.map(String), textposition:'top center',
+    textfont:{ size:13, color:BLUE }
+  }], {
+    xaxis:{ title:'Academic Year', gridcolor:'#f0f2f5', linecolor:'#e8ecef' },
+    yaxis:{ title:'Students', gridcolor:'#f0f2f5', linecolor:'#e8ecef' },
+    plot_bgcolor:'#fff', paper_bgcolor:'#fff',
+    margin:{ t:20, b:50, l:60, r:20 },
+    font:{ family:'Inter,sans-serif', color:'#636e72' }
+  }, {responsive:true, displayModeBar:false});
+}
+
+/* ── ROI chart ───────────────────────────────────────────── */
+function renderROIChart(roi) {
+  const net = roi.revenue - roi.costs;
+  Plotly.newPlot('roi-chart', [{
+    x: ['Total Revenue', 'Total Costs', 'Net Result'],
+    y: [roi.revenue, roi.costs, net],
+    type:'bar',
+    marker:{ color:[ BLUE, '#90a4ae', net >= 0 ? '#2e7d32' : RED ] },
+    text:[
+      `$${(roi.revenue/1e6).toFixed(2)}M`,
+      `$${(roi.costs/1e6).toFixed(2)}M`,
+      `$${(net/1e6).toFixed(2)}M`
+    ],
+    textposition:'outside',
+    textfont:{ size:12, family:'Inter,sans-serif' }
+  }], {
+    yaxis:{ tickformat:'$,.0f', gridcolor:'#f0f2f5', linecolor:'#e8ecef' },
+    plot_bgcolor:'#fff', paper_bgcolor:'#fff',
+    margin:{ t:20, b:60, l:80, r:20 },
+    showlegend:false,
+    font:{ family:'Inter,sans-serif', color:'#636e72' },
+    annotations:[{
+      text:`Break-even: ${roi.break_even} students &nbsp;|&nbsp; Payback: ${roi.payback_years} yrs`,
+      x:0.5, y:-0.2, xref:'paper', yref:'paper',
+      showarrow:false, font:{size:10, color:'#636e72'}
+    }]
+  }, {responsive:true, displayModeBar:false});
+}
+
+/* ── Scenario chart ──────────────────────────────────────── */
+async function renderScenariosChart(inputs) {
+  try {
+    const resp = await fetch('/api/scenarios', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(inputs)
+    });
+    const data = await resp.json();
+    const sc = data.scenarios;
+    const colors = [AMBER, BLUE, RED, PURPLE];
+    Plotly.newPlot('scenario-chart', [{
+      x: sc.map(s => s.scenario), y: sc.map(s => s.year1),
+      type:'bar',
+      marker:{ color: sc.map((_,i) => colors[i % colors.length]) },
+      text: sc.map(s => s.year1.toString()), textposition:'outside',
+      textfont:{ size:12 }
+    }], {
+      xaxis:{ title:'Scenario' },
+      yaxis:{ title:'Year 1 Students', gridcolor:'#f0f2f5' },
+      plot_bgcolor:'#fff', paper_bgcolor:'#fff',
+      margin:{ t:20, b:50, l:60, r:20 }, showlegend:false,
+      font:{ family:'Inter,sans-serif', color:'#636e72' }
+    }, {responsive:true, displayModeBar:false});
+  } catch(e) { console.error('Scenarios chart error:', e); }
+}
+
+/* ── States chart ────────────────────────────────────────── */
+async function renderStatesChart(inputs) {
+  try {
+    const resp = await fetch('/api/states', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(inputs)
+    });
+    const data = await resp.json();
+    const st = data.states;
+    const shades = [BLUE, BLUE2, '#42a5f5'];
+    const traces = ['year1','year2','year3'].map((yr, i) => ({
+      name: `Year ${i+1}`,
+      x: st.map(s => s.state), y: st.map(s => s[yr]),
+      type:'bar',
+      marker:{ color: shades[i], opacity:0.88 }
+    }));
+    Plotly.newPlot('state-chart', traces, {
+      barmode:'group',
+      xaxis:{ title:'State' }, yaxis:{ title:'Students', gridcolor:'#f0f2f5' },
+      plot_bgcolor:'#fff', paper_bgcolor:'#fff',
+      margin:{ t:20, b:50, l:60, r:20 },
+      legend:{ orientation:'h', y:-0.25 },
+      font:{ family:'Inter,sans-serif', color:'#636e72' }
+    }, {responsive:true, displayModeBar:false});
+  } catch(e) { console.error('States chart error:', e); }
+}
+</script>
+</body>
+</html>

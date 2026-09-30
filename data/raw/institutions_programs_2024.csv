@@ -1,0 +1,20 @@
+institution_name,state,institution_type,has_ms_ai,has_bs_ai,has_ai_cybersecurity,ai_program_name,program_url,tuition_per_credit_grad,total_ms_credits,program_launched_year,notable_feature,is_home_institution
+University of New Haven,CT,Private,Yes,No,Yes,M.S. in Artificial Intelligence; M.S. in Cybersecurity,https://www.newhaven.edu/graduate/programs/artificial-intelligence/,PENDING,30,2021,NSA CAE-designated; AI + Cybersecurity combined track,True
+University of Connecticut,CT,Public,No,No,No,M.S. in Computer Science (AI track available),https://www.cse.uconn.edu/graduate-programs/,PENDING,PENDING,PENDING,AI track within general CS MS; no dedicated AI degree,False
+Quinnipiac University,CT,Private,No,No,No,M.S. in Data Science,https://www.qu.edu/graduate-professional/programs/data-science/,PENDING,PENDING,2019,Data Science focus; no dedicated AI program yet,False
+Yale University,CT,Private,No,No,No,Ph.D./M.S. in Computer Science,https://cpsc.yale.edu/academics/graduate-program,PENDING,PENDING,PENDING,Research-focused; no professional MS AI degree,False
+Fairfield University,CT,Private,No,No,No,PENDING,PENDING,PENDING,PENDING,PENDING,No dedicated AI program confirmed,False
+Sacred Heart University,CT,Private,PENDING,No,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,Program research pending,False
+Western Connecticut State University,CT,Public,No,No,No,PENDING,PENDING,PENDING,PENDING,PENDING,No graduate AI program confirmed,False
+New York University,NY,Private,Yes,Yes,No,M.S. in Data Science; M.S. in Computer Science (AI track),https://engineering.nyu.edu/academics/programs/data-science-ms,PENDING,PENDING,2013,Tandon School of Engineering; strong industry ties,False
+Columbia University,NY,Private,Yes,No,No,M.S. in Computer Science (Machine Learning track),https://www.cs.columbia.edu/education/ms/,PENDING,PENDING,PENDING,Highly selective; ML track within CS MS,False
+Cornell Tech,NY,Private,Yes,No,No,M.Eng. in Computer Science; M.S. in Information Systems,https://tech.cornell.edu/programs/masters-programs/,PENDING,PENDING,2013,NYC campus; strong startup/industry focus,False
+Rensselaer Polytechnic Institute,NY,Private,Yes,No,No,M.S. in Computer Science (AI/ML concentration),https://science.rpi.edu/computer-science/programs/graduate,PENDING,PENDING,PENDING,AI research center on campus,False
+Stony Brook University,NY,Public,Yes,No,No,M.S. in Computer Science,https://www.cs.stonybrook.edu/admissions/graduate-admissions,PENDING,PENDING,PENDING,Strong research output; part of SUNY system,False
+Northeastern University,MA,Private,Yes,No,Yes,M.S. in Artificial Intelligence; M.S. in Cybersecurity,https://www.khoury.northeastern.edu/programs/artificial-intelligence-ms/,PENDING,PENDING,2019,Co-op required; largest CS program in region,False
+Boston University,MA,Private,Yes,No,No,M.S. in Artificial Intelligence,https://www.bu.edu/cs/msai/,PENDING,PENDING,2022,Dedicated MS AI degree; strong research faculty,False
+Massachusetts Institute of Technology,MA,Private,Yes,No,No,Ph.D./S.M. in EECS/AI,https://www.eecs.mit.edu/academics/graduate-programs/,PENDING,PENDING,PENDING,Research-only; no professional MS AI degree,False
+University of Massachusetts Amherst,MA,Public,Yes,No,No,M.S. in Computer Science (AI/ML focus),https://www.cics.umass.edu/academics/ms,PENDING,PENDING,PENDING,CICS program; strong NLP and ML research,False
+Worcester Polytechnic Institute,MA,Private,Yes,No,No,M.S. in Artificial Intelligence,https://www.wpi.edu/academics/study/artificial-intelligence-ms,PENDING,PENDING,2020,Project-based curriculum; AI research center,False
+Brandeis University,MA,Private,PENDING,No,PENDING,PENDING,PENDING,PENDING,PENDING,PENDING,Program research pending,False
+Harvard University,MA,Private,No,No,No,A.L.M. in Data Science (Extension School),https://extension.harvard.edu/academics/programs/data-science-graduate-program/,PENDING,PENDING,PENDING,No dedicated residential MS AI; Extension School only,False

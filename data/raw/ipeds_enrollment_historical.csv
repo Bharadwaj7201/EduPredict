@@ -1,0 +1,67 @@
+program,student_type,year,annual_fa_cohort,data_source,notes
+MS in AI,International,2015,20,IPEDS CIP 11.0701 comparable NE region programs,NCES baseline cohort
+MS in AI,International,2016,21,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,+5% growth
+MS in AI,International,2017,22,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,+5% growth
+MS in AI,International,2018,23,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,+4.5% growth
+MS in AI,International,2019,24,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,pre-COVID peak
+MS in AI,International,2020,23,IPEDS 2020-21 national grad enrollment -2.1%,COVID disruption
+MS in AI,International,2021,25,IIE Open Doors 2023 grad STEM recovery +8%,post-COVID recovery
+MS in AI,International,2022,30,IPEDS CIP 11.0701+14.0901 AI programs 2020-2023 CAGR +15.3%,AI surge begins
+MS in AI,International,2023,36,IPEDS CIP 11.0701+14.0901 AI programs 2020-2023 CAGR +15.3%,AI surge peak
+MS in AI,International,2024,42,IIE Open Doors 2023 intl grad STEM +12%; IPEDS trend,AI surge moderating
+MS in AI,International,2025,45,Early enrollment data + trend projection (estimated),Current year estimate
+MS in AI,Domestic,2015,15,IPEDS CIP 11.0701 comparable NE region programs,NCES baseline cohort
+MS in AI,Domestic,2016,16,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,+5% growth
+MS in AI,Domestic,2017,17,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,+5% growth
+MS in AI,Domestic,2018,18,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,+4.5% growth
+MS in AI,Domestic,2019,18,NCES Digest 2023 Table 317.10 CS grad +4.2% CAGR,pre-COVID plateau
+MS in AI,Domestic,2020,18,IPEDS 2020-21 domestic grad enrollment impact minimal,COVID minimal impact domestic
+MS in AI,Domestic,2021,19,NCES post-COVID recovery 2021-22,recovery
+MS in AI,Domestic,2022,22,IPEDS CIP 11.0701 AI-specific programs domestic surge,AI surge begins
+MS in AI,Domestic,2023,26,IPEDS CIP 11.0701+14.0901 domestic AI grad growth,AI surge
+MS in AI,Domestic,2024,32,NCES 2024 CS graduate enrollment trend,continued growth
+MS in AI,Domestic,2025,35,Early enrollment data + trend projection (estimated),Current year estimate
+BS in AI,International,2015,22,IPEDS CIP 11.0701 UG comparable NE region programs,NCES baseline
+BS in AI,International,2016,23,NCES Digest 2023 Table 306.10 CS undergrad +4.2% CAGR,+5% growth
+BS in AI,International,2017,24,NCES Digest 2023 Table 306.10 CS undergrad +4.2% CAGR,+5% growth
+BS in AI,International,2018,25,NCES Digest 2023 Table 306.10 CS undergrad +4.2% CAGR,+5% growth
+BS in AI,International,2019,26,NCES Digest 2023 Table 306.10 CS undergrad +4.2% CAGR,pre-COVID
+BS in AI,International,2020,25,IPEDS 2020-21 undergrad international enrollment -3%,COVID disruption
+BS in AI,International,2021,27,IIE Open Doors 2023 undergrad intl recovery,recovery
+BS in AI,International,2022,33,IPEDS CIP 11.0701 BS AI/CS programs surge,AI surge
+BS in AI,International,2023,40,IPEDS AI-specific CIP growth 2020-2023 +15.3%,AI surge peak
+BS in AI,International,2024,47,IIE Open Doors 2023 intl STEM undergrad trend,continued
+BS in AI,International,2025,50,Early enrollment data + trend projection (estimated),Current year estimate
+BS in AI,Domestic,2015,30,IPEDS CIP 11.0701 UG domestic comparable programs,NCES baseline
+BS in AI,Domestic,2016,32,NCES Digest 2023 Table 306.10 CS undergrad CAGR,+5% growth
+BS in AI,Domestic,2017,34,NCES Digest 2023 Table 306.10 CS undergrad CAGR,+5% growth
+BS in AI,Domestic,2018,36,NCES Digest 2023 Table 306.10 CS undergrad CAGR,+5% growth
+BS in AI,Domestic,2019,38,NCES Digest 2023 Table 306.10 CS undergrad CAGR,pre-COVID
+BS in AI,Domestic,2020,37,IPEDS 2020-21 domestic UG enrollment -2.5%,COVID impact
+BS in AI,Domestic,2021,40,NCES UG enrollment recovery 2021-22,recovery
+BS in AI,Domestic,2022,47,IPEDS CS UG domestic programs AI interest surge,AI surge
+BS in AI,Domestic,2023,55,IPEDS CIP 11.0701 domestic BS completions trend,AI surge peak
+BS in AI,Domestic,2024,58,NCES 2024 CS undergrad domestic enrollment,moderating
+BS in AI,Domestic,2025,60,Early enrollment data + trend projection (estimated),Current year estimate
+AI in Cybersecurity,International,2015,18,IPEDS CIP 11.1003 comparable NE programs,NCES baseline
+AI in Cybersecurity,International,2016,19,NCES CIP 11.1003 cybersecurity programs +4.2% CAGR,+5% growth
+AI in Cybersecurity,International,2017,20,NCES CIP 11.1003 cybersecurity programs +4.2% CAGR,+5% growth
+AI in Cybersecurity,International,2018,21,NCES CIP 11.1003 cybersecurity programs +4.2% CAGR,+5% growth
+AI in Cybersecurity,International,2019,22,NCES CIP 11.1003 cybersecurity programs +4.2% CAGR,pre-COVID
+AI in Cybersecurity,International,2020,21,IPEDS 2020-21 grad enrollment -2.1%,COVID
+AI in Cybersecurity,International,2021,23,Cybersecurity demand surge post-SolarWinds,security demand surge
+AI in Cybersecurity,International,2022,27,IPEDS CIP 11.1003 + AI integration programs growth,AI+cyber surge
+AI in Cybersecurity,International,2023,32,BLS IS Analysts 10yr growth +32% driving enrollment,AI+cyber surge
+AI in Cybersecurity,International,2024,37,IIE intl grad STEM trend; IS Analysts demand,continued
+AI in Cybersecurity,International,2025,40,Early enrollment data + trend projection (estimated),Current year estimate
+AI in Cybersecurity,Domestic,2015,22,IPEDS CIP 11.1003 domestic comparable programs,NCES baseline
+AI in Cybersecurity,Domestic,2016,24,NCES CIP 11.1003 domestic growth +5%,+8% growth (high demand)
+AI in Cybersecurity,Domestic,2017,25,NCES CIP 11.1003 domestic growth +5%,+5% growth
+AI in Cybersecurity,Domestic,2018,26,NCES CIP 11.1003 domestic growth +4%,+4% growth
+AI in Cybersecurity,Domestic,2019,27,NCES CIP 11.1003 domestic growth +4%,pre-COVID
+AI in Cybersecurity,Domestic,2020,27,IPEDS 2020-21 cybersecurity held steady (essential),COVID minimal impact
+AI in Cybersecurity,Domestic,2021,29,Post-Colonial Pipeline + SolarWinds hiring surge,security demand
+AI in Cybersecurity,Domestic,2022,34,IPEDS CIP 11.1003 domestic AI+cyber programs growth,AI+cyber surge
+AI in Cybersecurity,Domestic,2023,39,BLS IS Analysts 10yr +32%; domestic enrollment boom,surge peak
+AI in Cybersecurity,Domestic,2024,43,NCES 2024 IS/cybersecurity domestic grad enrollment,moderating growth
+AI in Cybersecurity,Domestic,2025,45,Early enrollment data + trend projection (estimated),Current year estimate

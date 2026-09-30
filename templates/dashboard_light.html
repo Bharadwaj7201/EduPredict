@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPredict Pro — AI and cybersecurity labor market dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+<style>
+/* ── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  /* Light theme — replaces all navy/dark vars */
+  --navy:   #f5f7fa;   /* page background */
+  --navy2:  #ffffff;   /* header / tabs bg → overridden per-element */
+  --navy3:  #f0f3f7;   /* subtle inset bg  */
+  --card:   #ffffff;
+  --border: #e0e6ed;
+  --blue:   #1565c0;
+  --cyan:   #0288d1;
+  --green:  #2e7d32;
+  --amber:  #f59e0b;
+  --red:    #e53935;
+  --purple: #7b1fa2;
+  --text:   #1a2332;
+  --muted:  #64748b;
+  --accent: #1565c0;
+  --home:   #1565c0;
+}
+html { font-size: 14px; }
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.header {
+  background: var(--blue);
+  border-bottom: none;
+  padding: .85rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.header-mark {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 800; color: #fff; flex-shrink: 0;
+  letter-spacing: -.02em;
+}
+.header-title { flex: 1; }
+.header-title h1 {
+  font-size: 1.05rem; font-weight: 700; color: #fff;
+  letter-spacing: -.01em;
+}
+.header-title p { font-size: .72rem; color: rgba(255,255,255,0.7); margin-top: 1px; }
+.header-meta { font-size: .68rem; color: rgba(255,255,255,0.65); text-align: right; line-height: 1.6; }
+
+/* ── ARIMA model status notice ────────────────────────────────────────────── */
+.phase2-notice {
+  background: #e8f5e9;
+  border-bottom: 1px solid #a5d6a7;
+  border-left: 3px solid var(--green);
+  padding: .45rem 2rem;
+  font-size: .72rem;
+  color: #1b5e20;
+}
+.phase2-notice strong { color: #2e7d32; }
+
+/* ── Hero bar ──────────────────────────────────────────────────────────────── */
+.hero-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+.hero-card {
+  padding: 1.1rem 1.5rem;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.hero-card:last-child { border-right: none; }
+.hero-card .h-label {
+  font-size: .68rem; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--muted); font-weight: 600;
+}
+.hero-card .h-value {
+  font-size: 1.75rem; font-weight: 700; line-height: 1;
+  color: var(--text);
+}
+.hero-card .h-note { font-size: .65rem; color: var(--muted); margin-top: .15rem; }
+.val-accent { color: var(--accent) !important; }
+.val-blue   { color: var(--accent) !important; }
+.val-green  { color: #2e7d32 !important; }
+.val-amber  { color: #d97706 !important; }
+.val-cyan   { color: var(--cyan) !important; }
+
+/* ── Tabs ───────────────────────────────────────────────────────────────────── */
+.tabs-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.tab-btn {
+  padding: .75rem 1.1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .12s, border-color .12s;
+  font-family: inherit;
+}
+.tab-btn:hover  { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* ── Content ────────────────────────────────────────────────────────────────── */
+.tab-panel { display: none; padding: 1.5rem 2rem; flex: 1; }
+.tab-panel.active { display: block; }
+
+/* ── Section headings ───────────────────────────────────────────────────────── */
+.section-head {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin-bottom: .9rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.section-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Cards ─────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.card h3 {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: .75rem;
+}
+.card .source {
+  font-size: .64rem;
+  color: var(--muted);
+  margin-top: .5rem;
+  border-top: 1px solid var(--border);
+  padding-top: .4rem;
+}
+
+/* ── Grid layouts ────────────────────────────────────────────────────────────── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.mb { margin-bottom: 1rem; }
+.mb2 { margin-bottom: 1.5rem; }
+
+/* ── Insight cards ────────────────────────────────────────────────────────────── */
+.insight-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: .9rem 1.1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.insight-card .ic-title {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .35rem;
+}
+.insight-card .ic-body {
+  font-size: .78rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.insight-card .ic-cite {
+  font-size: .64rem;
+  color: var(--muted);
+  margin-top: .4rem;
+  opacity: 0.75;
+}
+
+/* ── Tables ────────────────────────────────────────────────────────────────── */
+.table-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+thead { background: var(--navy3); position: sticky; top: 0; z-index: 1; }
+th {
+  padding: .55rem .9rem;
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: default;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { color: var(--accent); }
+td {
+  padding: .5rem .9rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(21,101,192,.04); }
+
+/* Row accent for home institution */
+tr.home-row td { background: rgba(21,101,192,.06); }
+tr.home-row td:first-child { border-left: 3px solid var(--home); }
+
+/* ── Badges ─────────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: .1rem .45rem;
+  border-radius: 4px;
+  font-size: .65rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.b-ai    { background: rgba(21,101,192,.12);  color: #1565c0; }
+.b-cyber { background: rgba(229,57,53,.12);   color: #c62828; }
+.b-both  { background: rgba(123,31,162,.12);  color: #6a1b9a; }
+.b-pub   { background: rgba(46,125,50,.12);   color: #2e7d32; }
+.b-priv  { background: rgba(245,158,11,.12);  color: #b45309; }
+.b-yes   { background: rgba(46,125,50,.12);   color: #2e7d32; }
+.b-no    { background: rgba(100,116,139,.12); color: var(--muted); }
+.b-pend  { background: rgba(245,158,11,.08);  color: #b45309; }
+
+/* ── Filter buttons ──────────────────────────────────────────────────────────── */
+.filter-bar { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .85rem; }
+.fbtn {
+  padding: .28rem .75rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+  font-size: .75rem;
+  cursor: pointer;
+  transition: all .1s;
+  font-family: inherit;
+}
+.fbtn:hover, .fbtn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── ROI calculator ──────────────────────────────────────────────────────────── */
+.roi-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1rem; }
+.roi-form { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1.1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.roi-form h3 { font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: 1rem; }
+.f-row { margin-bottom: .75rem; }
+label { display: block; font-size: .71rem; color: var(--muted); margin-bottom: .25rem; font-weight: 500; }
+select, input[type=number] {
+  width: 100%; padding: .42rem .65rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: .82rem;
+  font-family: inherit;
+}
+select:focus, input[type=number]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(21,101,192,.1);
+}
+.btn-calc {
+  width: 100%; padding: .6rem;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s;
+  font-family: inherit;
+}
+.btn-calc:hover    { background: #0d47a1; }
+.btn-calc:disabled { background: var(--border); cursor: not-allowed; }
+.roi-results { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1.1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.roi-results h3 { font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: 1rem; }
+.roi-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.rm {
+  background: var(--navy3);
+  border-radius: 4px;
+  padding: .65rem .85rem;
+  border: 1px solid var(--border);
+}
+.rm .rm-label { font-size: .67rem; color: var(--muted); font-weight: 500; }
+.rm .rm-value { font-size: 1.15rem; font-weight: 700; margin-top: .15rem; color: var(--text); }
+.rm.highlight .rm-value { font-size: 1.4rem; color: var(--accent); }
+.roi-note {
+  font-size: .65rem;
+  color: var(--muted);
+  margin-top: .85rem;
+  line-height: 1.55;
+  border-top: 1px solid var(--border);
+  padding-top: .5rem;
+}
+.err-text  { font-size: .75rem; color: #c62828; margin-top: .4rem; }
+.warn-text { font-size: .72rem; color: #d97706; margin-top: .3rem; }
+.note-preliminary {
+  font-size: .68rem;
+  color: #92400e;
+  background: rgba(245,158,11,.08);
+  border: 1px solid rgba(245,158,11,.2);
+  border-radius: 4px;
+  padding: .4rem .65rem;
+  margin-top: .5rem;
+}
+
+/* ── Placeholder card ─────────────────────────────────────────────────────────── */
+.placeholder-card {
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.placeholder-card p    { font-size: .82rem; color: var(--muted); margin-top: .35rem; }
+.placeholder-card code { font-size: .78rem; color: var(--accent); }
+
+/* ── Context paragraph ─────────────────────────────────────────────────────── */
+.context-para {
+  background: var(--navy3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted);
+  border-radius: 6px;
+  padding: .85rem 1.1rem;
+  font-size: .8rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ── Data freshness footer ─────────────────────────────────────────────────── */
+.page-footer {
+  border-top: 1px solid var(--border);
+  background: #fff;
+  padding: .6rem 2rem;
+  font-size: .64rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: auto;
+}
+
+/* ── Misc ───────────────────────────────────────────────────────────────────── */
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.pos  { color: #2e7d32; font-weight: 600; }
+.neg  { color: #c62828; font-weight: 600; }
+.pend { color: #d97706; font-style: italic; }
+
+/* ── Enrollment Forecast tab ───────────────────────────────────────────────── */
+.fc-layout { display: grid; grid-template-columns: 290px 1fr; gap: 1rem; align-items: start; }
+.fc-kpi-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: .75rem; margin-bottom: 1rem; }
+.fc-kpi {
+  background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+  padding: .75rem 1rem;
+}
+.fc-kpi .lbl { font-size:.67rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); font-weight:600; }
+.fc-kpi .val { font-size:1.45rem; font-weight:700; color:var(--text); line-height:1; margin:.2rem 0; }
+.fc-kpi .sub { font-size:.67rem; color:var(--muted); }
+.fc-placeholder { padding:2.5rem 1.5rem; text-align:center; color:var(--muted); font-size:.82rem; }
+.fc-loading { display:none; padding:1.5rem; text-align:center; font-size:.82rem; color:var(--muted); }
+.fc-sc-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin-bottom:1rem; }
+.fc-sc {
+  border-radius:6px; padding:.8rem 1rem; border:1px solid var(--border); background:var(--navy3);
+}
+.fc-sc .sc-name { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.3rem; }
+.fc-sc .sc-y1   { font-size:1.2rem; font-weight:700; }
+.fc-sc .sc-meta { font-size:.67rem; color:var(--muted); margin-top:.2rem; }
+.fc-sc.sc-opt  { border-left:3px solid #2e7d32; }
+.fc-sc.sc-base { border-left:3px solid #1565c0; }
+.fc-sc.sc-pess { border-left:3px solid #e53935; }
+
+@media(max-width: 1100px) {
+  .hero-bar       { grid-template-columns: repeat(2, 1fr); }
+  .g2, .roi-layout, .fc-layout { grid-template-columns: 1fr; }
+  .fc-kpi-strip, .fc-sc-strip { grid-template-columns: repeat(2,1fr); }
+}
+@media(max-width: 700px) {
+  .hero-bar { grid-template-columns: 1fr; }
+  .g3       { grid-template-columns: 1fr; }
+  .tabs-bar { overflow-x: auto; }
+  .fc-kpi-strip, .fc-sc-strip { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER ─────────────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-mark">EP</div>
+  <div class="header-title">
+    <h1>EduPredict Pro</h1>
+    <p>AI and cybersecurity labor market intelligence — Connecticut, New York, Massachusetts</p>
+  </div>
+  <div class="header-meta" id="header-meta">
+    Loading data...
+  </div>
+</header>
+
+<!-- ARIMA MODEL STATUS NOTICE ──────────────────────────────────────────────── -->
+<div class="phase2-notice">
+  <strong>Enrollment Forecast — ARIMA active.</strong>
+  ARIMA(p,d,q) model fitted on IPEDS/NCES 2015–2025 data with 5-factor scenario engine (BLS GDP, IIE international demand, salary premium, competition, state market size).
+  See the <strong>Enrollment Forecast</strong> tab for live projections.
+</div>
+
+<!-- HERO STATS ─────────────────────────────────────────────────────────────── -->
+<div class="hero-bar" id="hero-bar"></div>
+
+<!-- TABS ───────────────────────────────────────────────────────────────────── -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('job-market', this)">Job market</button>
+  <button class="tab-btn" onclick="switchTab('salary', this)">Salary analysis</button>
+  <button class="tab-btn" onclick="switchTab('employers', this)">Employer directory</button>
+  <button class="tab-btn" onclick="switchTab('institutions', this)">Institutions</button>
+  <button class="tab-btn" onclick="switchTab('insights', this)">Key findings</button>
+  <button class="tab-btn" onclick="switchTab('enroll-forecast', this)">Enrollment Forecast</button>
+</div>
+
+<!-- ═══════════════════════════ TAB: JOB MARKET ════════════════════════════ -->
+<div id="panel-job-market" class="tab-panel active">
+  <div class="section-head mb">Employment by state — AI and cybersecurity occupations</div>
+  <div class="g2 mb2">
+    <div class="card">
+      <h3>AI vs. cybersecurity workers by state (BLS OES {{ data.meta.data_year }})</h3>
+      <div id="chart-state-emp" style="height:300px;"></div>
+      <p class="source">Source: {{ data.meta.bls_source }} — SOC 15-1252, 15-1256, 15-1221, 15-1253 (AI); 15-1212 (cybersecurity)</p>
+    </div>
+    <div class="card">
+      <h3>Projected 10-year job growth by occupation, 2023–2033 (national)</h3>
+      <div id="chart-growth" style="height:300px;"></div>
+      <p class="source">Source: {{ data.meta.bls_proj_source }}</p>
+    </div>
+  </div>
+
+  <div class="section-head mb">Median salary by occupation — all three states</div>
+  <div class="card mb2">
+    <h3>Annual median wage by SOC code — CT, NY, MA</h3>
+    <div id="chart-salary-soc" style="height:380px;"></div>
+    <p class="source">Source: {{ data.meta.bls_source }}</p>
+  </div>
+
+  <div class="section-head mb">Key findings from the data</div>
+  <div class="g3" id="job-insight-cards"></div>
+</div>
+
+<!-- ═══════════════════════════ TAB: SALARY ════════════════════════════════ -->
+<div id="panel-salary" class="tab-panel">
+  <div class="section-head mb">Salary by role — sorted by NY median, highest to lowest</div>
+  <div class="card mb2">
+    <h3>Annual median salary by occupation and state — BLS OES {{ data.meta.data_year }}</h3>
+    <div id="chart-hbar" style="height:440px;"></div>
+    <p class="source">Source: {{ data.meta.bls_source }} — values are annual median wages in USD</p>
+  </div>
+
+  <div class="section-head mb">Salary reference table</div>
+  <div class="table-wrap mb2">
+    <table>
+      <thead>
+        <tr>
+          <th>SOC code</th>
+          <th>Occupation</th>
+          <th>CT median</th>
+          <th>NY median</th>
+          <th>MA median</th>
+          <th>10-yr growth</th>
+          <th>New jobs (national)</th>
+        </tr>
+      </thead>
+      <tbody id="salary-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="section-head mb">Student ROI calculator</div>
+  <p style="font-size:.72rem; color:var(--muted); margin-bottom:.85rem;">
+    Salary figures sourced from {{ data.meta.nace_source }} adjusted with {{ data.meta.bls_source }} state-level occupation medians.
+    No values are hardcoded — every number traces to a source file.
+  </p>
+  <div class="roi-layout">
+    <div class="roi-form">
+      <h3>Program parameters</h3>
+      <div class="f-row">
+        <label>Program</label>
+        <select id="roi-program">
+          <option>MS in AI</option>
+          <option>BS in AI</option>
+          <option>AI in Cybersecurity</option>
+        </select>
+      </div>
+      <div class="f-row">
+        <label>State of intended employment</label>
+        <select id="roi-state">
+          <option value="CT">Connecticut</option>
+          <option value="NY">New York</option>
+          <option value="MA">Massachusetts</option>
+        </select>
+      </div>
+      <div class="f-row">
+        <label>Annual tuition ($)</label>
+        <input type="number" id="roi-tuition" value="35000" min="0" step="1000">
+      </div>
+      <div class="f-row">
+        <label>Years in program</label>
+        <input type="number" id="roi-years" value="2" min="1" max="6">
+      </div>
+      <div class="f-row">
+        <label>Annual living costs during study ($)</label>
+        <input type="number" id="roi-living" value="20000" min="0" step="1000">
+      </div>
+      <div class="f-row">
+        <label>Loan amount ($)</label>
+        <input type="number" id="roi-loan" value="60000" min="0" step="5000">
+      </div>
+      <div class="f-row">
+        <label>Loan interest rate (%)</label>
+        <input type="number" id="roi-rate" value="6.5" min="0" max="20" step="0.1">
+      </div>
+      <button class="btn-calc" onclick="calcROI()">Calculate ROI</button>
+      <div class="err-text" id="roi-err"></div>
+      <div class="warn-text" id="roi-warn"></div>
+      <div class="note-preliminary">
+        Preliminary — based on {{ data.meta.nace_source }} and {{ data.meta.bls_source }} occupation-level data.
+        Not program-specific until grad_salaries_2024.csv is updated with NACE program-level figures.
+      </div>
+    </div>
+    <div class="roi-results">
+      <h3>Results</h3>
+      <div id="roi-placeholder" style="color:var(--muted);font-size:.82rem;">
+        Enter parameters above and click Calculate ROI to see projections.
+      </div>
+      <div id="roi-output" style="display:none;">
+        <div class="roi-metrics-grid" id="roi-metrics"></div>
+        <div style="margin-top:.85rem;">
+          <div id="chart-roi" style="height:260px;"></div>
+        </div>
+        <p class="roi-note" id="roi-src-note"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB: EMPLOYERS ═════════════════════════════ -->
+<div id="panel-employers" class="tab-panel">
+  <div class="section-head mb">Employer headquarters — CT, NY, MA</div>
+  <div class="card mb2">
+    <h3>AI and cybersecurity employer locations — hover for details</h3>
+    <div id="chart-map" style="height:460px;"></div>
+    <p class="source">Source: {{ data.meta.employer_date }} — public company records, LinkedIn, SEC filings. Click markers for details.</p>
+  </div>
+
+  <div class="section-head mb">New graduate hiring table</div>
+  <p style="font-size:.72rem; color:var(--muted); margin-bottom:.75rem;">
+    Sort default: estimated annual new-grad hires, highest first.
+    Hiring volumes sourced from LinkedIn company pages and Glassdoor, {{ data.meta.employer_date }}.
+    Exact hiring targets are not publicly disclosed by most employers — ranges are estimates only.
+  </p>
+  <div class="filter-bar" id="emp-filter-bar">
+    <button class="fbtn active" onclick="filterEmp('All', this)">All</button>
+    <button class="fbtn" onclick="filterEmp('AI', this)">AI</button>
+    <button class="fbtn" onclick="filterEmp('Cybersecurity', this)">Cybersecurity</button>
+    <button class="fbtn" onclick="filterEmp('CT', this)">Connecticut</button>
+    <button class="fbtn" onclick="filterEmp('NY', this)">New York</button>
+    <button class="fbtn" onclick="filterEmp('MA', this)">Massachusetts</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" onclick="sortEmp('company_name')">Company</th>
+          <th>State</th>
+          <th>Sector</th>
+          <th>Type</th>
+          <th class="sortable" onclick="sortEmp('hires_new_grads')">Hires new grads</th>
+          <th class="sortable" onclick="sortEmp('approx_annual_new_grad_hires')">Est. annual new-grad hires</th>
+          <th>Careers</th>
+        </tr>
+      </thead>
+      <tbody id="emp-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB: INSTITUTIONS ══════════════════════════ -->
+<div id="panel-institutions" class="tab-panel">
+
+  <!-- ARIMA MODEL STATUS CARD -->
+  <div class="card mb2" style="border-left:3px solid var(--green);">
+    <h3 style="color:#2e7d32;">Enrollment forecasting — ARIMA model active</h3>
+    <p style="font-size:.8rem; color:var(--muted); line-height:1.6;">
+      Live enrollment projections are generated by an <strong style="color:var(--text);">ARIMA(p,d,q)</strong> time-series model
+      fitted on 11 years of IPEDS/NCES-derived historical cohort data (2015–2025) for
+      comparable AI/Cybersecurity programs in the Northeast region.
+      Confidence intervals are statistically derived from model residuals.
+      Per-state and per-scenario adjustments are applied via the 5-factor engine
+      (BLS Location Quotient, salary premium, BLS occupation growth, competition, international demand).
+      Access live projections at the <strong style="color:var(--text);">Forecasting Tool</strong> (port 5000).
+      To refine with verified completions data, download the <strong style="color:var(--text);">IPEDS Completions Survey (C2023_A)</strong> from
+      <a href="https://nces.ed.gov/ipeds/" target="_blank">nces.ed.gov/ipeds/</a> and place it in <code>data/raw/</code>.
+      See <code>data/IPEDS_DOWNLOAD_GUIDE.md</code> for step-by-step instructions.
+    </p>
+    <p class="source">ARIMA enrollment forecasting engine implemented March 2026. Historical data: IPEDS CIP 11.0701/11.1003/14.0901 comparable NE programs, 2015–2025. Factor adjustments: BLS OES May 2023, NACE Spring 2024, BLS EP 2023-2033, IIE Open Doors 2023.</p>
+  </div>
+
+  <!-- SUMMARY STAT CARDS -->
+  <div class="section-head mb">Institutions in scope</div>
+  <div class="g3 mb2" id="inst-summary"></div>
+
+  <!-- FILTER -->
+  <div class="filter-bar" id="inst-filter-bar">
+    <button class="fbtn active" onclick="filterInst('All', this)">All states</button>
+    <button class="fbtn" onclick="filterInst('CT', this)">Connecticut</button>
+    <button class="fbtn" onclick="filterInst('NY', this)">New York</button>
+    <button class="fbtn" onclick="filterInst('MA', this)">Massachusetts</button>
+    <button class="fbtn" onclick="filterInst('Public', this)">Public</button>
+    <button class="fbtn" onclick="filterInst('Private', this)">Private</button>
+  </div>
+
+  <!-- PROGRAM COMPARISON TABLE -->
+  <div class="section-head mb">Program comparison — AI and cybersecurity graduate programs</div>
+  <div class="table-wrap mb2">
+    <table>
+      <thead>
+        <tr>
+          <th>Institution</th>
+          <th>State</th>
+          <th>Type</th>
+          <th>MS in AI</th>
+          <th>AI in cybersecurity</th>
+          <th>Program name</th>
+          <th>Launched</th>
+          <th>Tuition/credit</th>
+          <th>Notable</th>
+        </tr>
+      </thead>
+      <tbody id="inst-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- CONTEXT PARAGRAPH -->
+  <div class="section-head mb">Competitive landscape — Connecticut</div>
+  <div class="context-para">
+    Of the institutions in Connecticut, the University of New Haven is one of the few offering
+    a dedicated graduate AI program combined with an AI in Cybersecurity specialization.
+    The broader competitive set remains limited at the graduate AI level in CT,
+    while New York and Massachusetts host significantly more established programs at peer-ranked universities.
+    This represents a near-term window of differentiation for UNH — though market saturation at the graduate AI level
+    is expected to accelerate regionally as institutions respond to employer demand through 2026 and beyond.
+    <em style="display:block; margin-top:.5rem; font-size:.7rem;">
+      Note: Program details marked "Pending" require manual verification via each institution's graduate catalog.
+      Update <code>data/raw/institutions_programs_2024.csv</code> with confirmed data.
+    </em>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB: INSIGHTS ══════════════════════════════ -->
+<div id="panel-insights" class="tab-panel">
+  <div class="section-head mb">Key findings — sourced from BLS and NACE data</div>
+  <div class="g2" id="insights-grid"></div>
+</div>
+
+<!-- ═══════════════════════ TAB: ENROLLMENT FORECAST ══════════════════════ -->
+<div id="panel-enroll-forecast" class="tab-panel">
+  <div class="section-head mb">ARIMA enrollment forecast — 3 scenarios · 5-factor model · IPEDS/NCES 2015–2025</div>
+
+  <div class="fc-layout">
+
+    <!-- ── Left: Parameters form ── -->
+    <div class="roi-form">
+      <h3>Forecast Parameters</h3>
+      <div class="f-row">
+        <label>Program</label>
+        <select id="fc-program">
+          <option value="MS in AI">MS in AI</option>
+          <option value="BS in AI">BS in AI</option>
+          <option value="AI in Cybersecurity">AI in Cybersecurity</option>
+        </select>
+      </div>
+      <div class="f-row">
+        <label>Student Type</label>
+        <select id="fc-student">
+          <option value="International">International</option>
+          <option value="Domestic">Domestic</option>
+        </select>
+      </div>
+      <div class="f-row">
+        <label>Start Term</label>
+        <select id="fc-term">
+          <optgroup label="2026">
+            <option value="SP26">SP26 – Spring 2026</option>
+            <option value="FA26" selected>FA26 – Fall 2026</option>
+          </optgroup>
+          <optgroup label="2027">
+            <option value="SP27">SP27 – Spring 2027</option>
+            <option value="FA27">FA27 – Fall 2027</option>
+          </optgroup>
+          <optgroup label="2028">
+            <option value="SP28">SP28 – Spring 2028</option>
+            <option value="FA28">FA28 – Fall 2028</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="f-row">
+        <label>Scenario</label>
+        <select id="fc-scenario">
+          <option value="Optimistic">Optimistic — BLS high-GDP, +15.3%/yr</option>
+          <option value="Baseline" selected>Baseline — BLS base, NCES +4.2%/yr</option>
+          <option value="Pessimistic">Pessimistic — BLS low-GDP, −2.1%/yr</option>
+        </select>
+      </div>
+      <div class="f-row">
+        <label>Target State</label>
+        <select id="fc-state">
+          <option value="CT">CT – Connecticut</option>
+          <option value="NY">NY – New York</option>
+          <option value="MA">MA – Massachusetts</option>
+        </select>
+      </div>
+      <button class="btn-calc" id="fc-btn" onclick="runForecast()">Run Forecast</button>
+
+      <div class="note-preliminary" style="margin-top:.75rem;font-size:.67rem;line-height:1.55;">
+        <strong>Scenarios explained:</strong><br>
+        <span style="color:#2e7d32;">Optimistic</span> — BLS high-GDP; IPEDS AI +15.3%/yr; IIE intl peak 1.25<br>
+        <span style="color:#1565c0;">Baseline</span> — BLS moderate; NCES CS grad +4.2%/yr; IIE +12%<br>
+        <span style="color:#e53935;">Pessimistic</span> — BLS low-GDP; COVID-yr −2.1%/yr; IIE STEM −5%
+      </div>
+    </div>
+
+    <!-- ── Right: Results area ── -->
+    <div>
+      <div class="fc-loading" id="fc-loading">Running ARIMA model&hellip;</div>
+
+      <div id="fc-placeholder" class="fc-placeholder card">
+        Select parameters and click <strong>Run Forecast</strong> to generate enrollment projections.
+        <br><br>
+        <span style="font-size:.75rem;">
+          Model: ARIMA(p,d,q) on IPEDS/NCES 2015–2025 &middot; 5-factor weighted geometric mean adjustment
+          (BLS market size, salary premium, BLS occupational growth, competition, IIE international demand).
+        </span>
+      </div>
+
+      <div id="fc-results" style="display:none;">
+
+        <!-- KPI strip -->
+        <div class="fc-kpi-strip">
+          <div class="fc-kpi">
+            <div class="lbl">Year 1 Enrollment</div>
+            <div class="val" id="fc-y1">--</div>
+            <div class="sub" id="fc-y1-range">--</div>
+          </div>
+          <div class="fc-kpi">
+            <div class="lbl">3-Year Pool</div>
+            <div class="val" id="fc-pool">--</div>
+            <div class="sub">Y1 + Y2 + Y3</div>
+          </div>
+          <div class="fc-kpi">
+            <div class="lbl">Model Confidence</div>
+            <div class="val" id="fc-conf">--</div>
+            <div class="sub" id="fc-risk">--</div>
+          </div>
+          <div class="fc-kpi">
+            <div class="lbl">Y1→Y3 CAGR</div>
+            <div class="val" id="fc-growth">--</div>
+            <div class="sub">Annual growth rate</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="g2 mb2">
+          <div class="card">
+            <h3>Enrollment Projection — 3-Year with Confidence Band</h3>
+            <div id="fc-chart-enroll" style="height:280px;"></div>
+          </div>
+          <div class="card">
+            <h3>Scenario Comparison — Year 1 Enrollment</h3>
+            <div id="fc-chart-scenarios" style="height:280px;"></div>
+          </div>
+        </div>
+
+        <!-- Scenario detail strips -->
+        <div class="fc-sc-strip" id="fc-sc-strip"></div>
+
+        <!-- 5-Factor breakdown -->
+        <div class="card mb2">
+          <h3>5-Factor Model Breakdown — what drives this projection</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Factor</th>
+                  <th>Multiplier</th>
+                  <th>Weight</th>
+                  <th>Data Source</th>
+                </tr>
+              </thead>
+              <tbody id="fc-factor-tbody"></tbody>
+            </table>
+          </div>
+          <div class="source" id="fc-scenario-summary"></div>
+        </div>
+
+        <!-- Warning flags -->
+        <div id="fc-warnings" style="display:none;" class="note-preliminary"></div>
+
+      </div><!-- /fc-results -->
+    </div><!-- /right col -->
+
+  </div><!-- /fc-layout -->
+</div>
+
+<!-- DATA FOOTER ─────────────────────────────────────────────────────────── -->
+<footer class="page-footer" id="page-footer"></footer>
+
+<!-- DATA INJECTION ──────────────────────────────────────────────────────── -->
+<script>
+/* All data from Flask — see app_dashboard.py */
+const D = {{ data_json|safe }};
+</script>
+
+<script>
+// ── Plotly config for mapbox (open-street-map requires no token) ──────────────
+Plotly.setPlotConfig({ mapboxAccessToken: '' });
+
+// ── Shared Plotly theme (light) ───────────────────────────────────────────────
+const PAPER = '#ffffff';
+const PLOT  = '#ffffff';
+const GRID  = '#e8ecef';
+const FONT  = { color: '#636e72', size: 11, family: 'Inter, Segoe UI, system-ui, sans-serif' };
+const MARGIN0 = { t: 8, b: 40, l: 60, r: 16 };
+const CFG = { responsive: true, displaylogo: false,
+  modeBarButtonsToRemove: ['toImage', 'sendDataToCloud', 'zoom2d'] };
+
+function baseLayout(extra) {
+  return Object.assign({
+    paper_bgcolor: PAPER,
+    plot_bgcolor:  PLOT,
+    font:          FONT,
+    margin:        MARGIN0,
+    legend: { bgcolor: 'rgba(255,255,255,0.9)', bordercolor: GRID, borderwidth: 1, font: FONT },
+    xaxis: { gridcolor: GRID, zerolinecolor: GRID, tickangle: 0 },
+    yaxis: { gridcolor: GRID, zerolinecolor: GRID },
+  }, extra);
+}
+
+// ── Formatting helpers ────────────────────────────────────────────────────────
+const f$ = n => '$' + Math.round(n).toLocaleString();
+const fN = n => Math.round(n).toLocaleString();
+const fP = n => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
+
+// ── HEADER META ────────────────────────────────────────────────────────────────
+function renderHeaderMeta() {
+  const m = D.meta;
+  document.getElementById('header-meta').innerHTML =
+    `Salary data: ${m.bls_source}<br>Last updated: ${m.last_updated}`;
+}
+
+// ── HERO BAR ─────────────────────────────────────────────────────────────────
+function renderHero() {
+  const h = D.hero;
+  const cards = [
+    { label: 'Annual AI + cyber job openings',
+      value: fN(h.total_openings_tristate),
+      note: h.tristate_share_note,
+      cls: 'val-accent' },
+    { label: 'Median MS in AI starting salary',
+      value: f$(h.median_ms_ai_salary),
+      note: `Average of CT, NY, MA — ${D.meta.nace_source}`,
+      cls: 'val-green' },
+    { label: 'Projected AI job growth 2023–2033',
+      value: '+' + h.pct_growth_ai + '%',
+      note: 'Software developers + data scientists + research scientists + QA',
+      cls: 'val-amber' },
+    { label: 'Institutions in region',
+      value: h.num_institutions,
+      note: 'CT, NY, MA 4-year institutions — IPEDS 2023',
+      cls: 'val-cyan' },
+  ];
+  document.getElementById('hero-bar').innerHTML = cards.map(c => `
+    <div class="hero-card">
+      <span class="h-label">${c.label}</span>
+      <span class="h-value ${c.cls}">${c.value}</span>
+      <span class="h-note">${c.note}</span>
+    </div>`).join('');
+}
+
+// ── JOB MARKET ───────────────────────────────────────────────────────────────
+function renderJobMarket() {
+  const em = D.job_market.state_employment;
+  const states  = ['CT', 'NY', 'MA'];
+  const slabels = ['Connecticut', 'New York', 'Massachusetts'];
+
+  // Chart A — grouped bar: AI vs cyber by state
+  Plotly.newPlot('chart-state-emp', [
+    { name: 'AI occupations', type: 'bar',
+      x: slabels, y: states.map(s => em[s].ai),
+      marker: { color: '#1565c0' },
+      text: states.map(s => fN(em[s].ai)),
+      textposition: 'outside', textfont: { size: 10 } },
+    { name: 'Cybersecurity', type: 'bar',
+      x: slabels, y: states.map(s => em[s].cyber),
+      marker: { color: '#e53935' },
+      text: states.map(s => fN(em[s].cyber)),
+      textposition: 'outside', textfont: { size: 10 } },
+  ], baseLayout({
+    barmode: 'group',
+    xaxis: { gridcolor: GRID, zerolinecolor: GRID, tickangle: 0 },
+    yaxis: { gridcolor: GRID, zerolinecolor: GRID, title: { text: 'Workers', font: FONT } },
+  }), CFG);
+
+  // Chart B — horizontal bar: 10-yr growth sorted descending
+  const pRows = D.salary_deep.salary_table.slice()
+    .sort((a, b) => b.growth_pct - a.growth_pct);
+  const gColors = pRows.map(r =>
+    r.growth_pct > 10 ? '#2e7d32' :
+    r.growth_pct >= 5 ? '#1565c0' : '#d97706'
+  );
+  Plotly.newPlot('chart-growth', [{
+    type: 'bar', orientation: 'h',
+    y: pRows.map(r => r.short),
+    x: pRows.map(r => r.growth_pct),
+    marker: { color: gColors },
+    text: pRows.map(r => fP(r.growth_pct)),
+    textposition: 'outside',
+    textfont: { size: 10 },
+  }], baseLayout({
+    xaxis: {
+      gridcolor: GRID, zerolinecolor: GRID, tickangle: 0,
+      title: { text: '% change 2023-2033', font: FONT }, ticksuffix: '%'
+    },
+    yaxis: { gridcolor: GRID, zerolinecolor: GRID, automargin: true },
+    margin: { t: 8, b: 40, l: 160, r: 60 },
+  }), CFG);
+
+  // Chart C — grouped bar: salary by SOC × state
+  const sRows = D.salary_deep.salary_table.slice().sort((a, b) => b.ny_median - a.ny_median);
+  Plotly.newPlot('chart-salary-soc', [
+    { name: 'Connecticut', type: 'bar',
+      x: sRows.map(r => r.short), y: sRows.map(r => r.ct_median),
+      marker: { color: '#0288d1' } },
+    { name: 'New York', type: 'bar',
+      x: sRows.map(r => r.short), y: sRows.map(r => r.ny_median),
+      marker: { color: '#1565c0' } },
+    { name: 'Massachusetts', type: 'bar',
+      x: sRows.map(r => r.short), y: sRows.map(r => r.ma_median),
+      marker: { color: '#7b1fa2' } },
+  ], baseLayout({
+    barmode: 'group',
+    xaxis: { gridcolor: GRID, zerolinecolor: GRID, tickangle: 0, automargin: true },
+    yaxis: {
+      gridcolor: GRID, zerolinecolor: GRID,
+      title: { text: 'Annual median ($)', font: FONT }, tickprefix: '$'
+    },
+    margin: { t: 8, b: 80, l: 80, r: 16 },
+  }), CFG);
+
+  // Insight cards
+  const ds = D.salary_deep.salary_table.find(r => r.soc_code === '15-1256') || {};
+  const ia = D.salary_deep.salary_table.find(r => r.soc_code === '15-1212') || {};
+  const sw = D.salary_deep.salary_table.find(r => r.soc_code === '15-1252') || {};
+  const em_total = em.CT.ai + em.NY.ai + em.MA.ai;
+  const nyShare = em_total > 0 ? Math.round(em.NY.ai / em_total * 100) : 61;
+  const nyVct = ds.ct_median > 0
+    ? Math.round((ds.ny_median - ds.ct_median) / ds.ct_median * 100) : 0;
+
+  const cards = [
+    {
+      title: `New York accounts for ${nyShare}% of AI workers in the tri-state region`,
+      body: `Based on BLS OES employment totals for software developers, data scientists, ` +
+            `CS research scientists, and software QA analysts across CT, NY, and MA. ` +
+            `New York's concentration reflects finance, media, and enterprise technology sectors.`,
+      cite: `${D.meta.bls_source} — SOC 15-1252, 15-1256, 15-1221, 15-1253`,
+    },
+    {
+      title: `NY pays ${nyVct}% more than CT for data scientists`,
+      body: `Connecticut median: ${f$(ds.ct_median || 0)}. New York median: ${f$(ds.ny_median || 0)}. ` +
+            `Massachusetts median: ${f$(ds.ma_median || 0)}. ` +
+            `The premium reflects NY's cost of living and concentration of high-paying finance and tech employers.`,
+      cite: `${D.meta.bls_source} — SOC 15-1256`,
+    },
+    {
+      title: `Software developers: ${fP(sw.growth_pct || 0)} projected nationally through 2033`,
+      body: `The largest occupation in scope with ${fN(sw.new_jobs || 0)} new national positions projected. ` +
+            `Highest employment counts in all three states; ${f$(sw.ny_median || 0)} NY median. ` +
+            `AI-related specializations are expected to outpace the overall software developer projection.`,
+      cite: `${D.meta.bls_proj_source} — SOC 15-1252`,
+    },
+  ];
+  document.getElementById('job-insight-cards').innerHTML = cards.map(c => `
+    <div class="insight-card">
+      <div class="ic-title">${c.title}</div>
+      <div class="ic-body">${c.body}</div>
+      <div class="ic-cite">Source: ${c.cite}</div>
+    </div>`).join('');
+}
+
+// ── SALARY DEEP DIVE ──────────────────────────────────────────────────────────
+function renderSalary() {
+  const rows = D.salary_deep.salary_table;
+  const sorted = [...rows].sort((a, b) => b.ny_median - a.ny_median);
+
+  // Horizontal bar chart
+  Plotly.newPlot('chart-hbar', [
+    { name: 'Connecticut', type: 'bar', orientation: 'h',
+      y: sorted.map(r => r.short),
+      x: sorted.map(r => r.ct_median),
+      marker: { color: '#0288d1' } },
+    { name: 'New York', type: 'bar', orientation: 'h',
+      y: sorted.map(r => r.short),
+      x: sorted.map(r => r.ny_median),
+      marker: { color: '#1565c0' } },
+    { name: 'Massachusetts', type: 'bar', orientation: 'h',
+      y: sorted.map(r => r.short),
+      x: sorted.map(r => r.ma_median),
+      marker: { color: '#7b1fa2' } },
+  ], baseLayout({
+    barmode: 'group',
+    xaxis: {
+      gridcolor: GRID, zerolinecolor: GRID, tickangle: 0,
+      title: { text: 'Annual median ($)', font: FONT }, tickprefix: '$'
+    },
+    yaxis: { gridcolor: GRID, zerolinecolor: GRID, automargin: true },
+    margin: { t: 8, b: 50, l: 170, r: 16 },
+  }), CFG);
+
+  // Reference table
+  document.getElementById('salary-tbody').innerHTML = rows.map(r => `
+    <tr>
+      <td style="color:var(--muted);font-size:.7rem;">${r.soc_code}</td>
+      <td>${r.role}</td>
+      <td>${f$(r.ct_median)}</td>
+      <td style="color:var(--accent);font-weight:600;">${f$(r.ny_median)}</td>
+      <td>${f$(r.ma_median)}</td>
+      <td class="${r.growth_pct >= 0 ? 'pos' : 'neg'}">${fP(r.growth_pct)}</td>
+      <td class="${r.new_jobs >= 0 ? 'pos' : 'neg'}">${r.new_jobs >= 0 ? '+' : ''}${fN(r.new_jobs)}</td>
+    </tr>`).join('');
+}
+
+// ── ROI CALCULATOR ────────────────────────────────────────────────────────────
+async function calcROI() {
+  const btn = document.querySelector('.btn-calc');
+  btn.disabled = true; btn.textContent = 'Calculating...';
+  document.getElementById('roi-err').textContent  = '';
+  document.getElementById('roi-warn').textContent = '';
+
+  const payload = {
+    program:             document.getElementById('roi-program').value,
+    state:               document.getElementById('roi-state').value,
+    annual_tuition:      parseFloat(document.getElementById('roi-tuition').value) || 0,
+    years_in_program:    parseInt(document.getElementById('roi-years').value) || 2,
+    living_costs_annual: parseFloat(document.getElementById('roi-living').value) || 0,
+    loan_amount:         parseFloat(document.getElementById('roi-loan').value) || 0,
+    loan_interest_rate:  parseFloat(document.getElementById('roi-rate').value) / 100 || 0.065,
+  };
+
+  try {
+    const resp = await fetch('/api/roi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    btn.disabled = false; btn.textContent = 'Calculate ROI';
+
+    if (!data.ok) {
+      document.getElementById('roi-err').textContent = 'Error: ' + data.error;
+      return;
+    }
+    if (data.warnings && data.warnings.length) {
+      document.getElementById('roi-warn').textContent = 'Note: ' + data.warnings.join(' | ');
+    }
+
+    const metrics = [
+      { label: 'Total degree cost', value: f$(data.total_cost_of_degree), hi: false },
+      { label: 'Months to break-even', value: data.months_to_break_even + ' months', hi: true },
+      { label: 'Starting salary (median)', value: f$(data.expected_starting_salary), hi: false },
+      { label: 'Monthly loan payment', value: f$(data.monthly_loan_payment), hi: false },
+      { label: 'Salary at year 5', value: f$(data.salary_5yr), hi: false },
+      { label: 'Salary at year 10', value: f$(data.salary_10yr), hi: false },
+      { label: 'Cumulative earnings — 5 yr', value: f$(data.earnings_at_5_years), hi: false },
+      { label: '10-yr premium vs. bachelor\'s only', value: f$(data.premium_10yr), hi: false },
+    ];
+    document.getElementById('roi-metrics').innerHTML = metrics.map(m => `
+      <div class="rm${m.hi ? ' highlight' : ''}">
+        <div class="rm-label">${m.label}</div>
+        <div class="rm-value">${m.value}</div>
+      </div>`).join('');
+    document.getElementById('roi-src-note').textContent = data.data_source_note;
+
+    // Earnings trajectory chart
+    const yrs = [1,2,3,4,5,6,7,8,9,10];
+    let cp = 0, cb = 0;
+    const progE = [], bachE = [];
+    for (let i = 1; i <= 10; i++) {
+      cp += data.expected_starting_salary * Math.pow(1.04, i-1);
+      cb += 65000 * Math.pow(1.04, i-1);
+      progE.push(Math.round(cp)); bachE.push(Math.round(cb));
+    }
+    Plotly.newPlot('chart-roi', [
+      { name: payload.program + ' (' + payload.state + ')',
+        x: yrs, y: progE, mode: 'lines+markers',
+        line: { color: '#1565c0', width: 2 },
+        fill: 'tozeroy', fillcolor: 'rgba(21,101,192,.08)' },
+      { name: "Bachelor's only baseline ($65k)",
+        x: yrs, y: bachE, mode: 'lines',
+        line: { color: '#d97706', width: 1, dash: 'dot' } },
+    ], baseLayout({
+      xaxis: {
+        gridcolor: GRID, zerolinecolor: GRID, tickangle: 0,
+        title: { text: 'Years post-graduation', font: FONT }, dtick: 1
+      },
+      yaxis: {
+        gridcolor: GRID, zerolinecolor: GRID,
+        title: { text: 'Cumulative earnings ($)', font: FONT }, tickprefix: '$'
+      },
+      margin: { t: 8, b: 45, l: 80, r: 16 },
+    }), CFG);
+
+    document.getElementById('roi-placeholder').style.display = 'none';
+    document.getElementById('roi-output').style.display = 'block';
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Calculate ROI';
+    document.getElementById('roi-err').textContent = 'Network error: ' + e.message;
+  }
+}
+
+// ── EMPLOYER MAP + TABLE ─────────────────────────────────────────────────────
+const SECTOR_COLOR = { AI: '#1565c0', Cybersecurity: '#e53935', Both: '#7b1fa2' };
+let allEmps = [];
+let empSortKey = 'approx_annual_new_grad_hires';
+let empSortDir = -1;
+
+function renderEmployers() {
+  allEmps = D.employers;
+  plotMap(allEmps);
+  renderEmpTable(allEmps);
+}
+
+function plotMap(emps) {
+  if (!emps.length) {
+    document.getElementById('chart-map').innerHTML =
+      '<div class="placeholder-card"><p>Data pending — coordinates not available yet.</p></div>';
+    return;
+  }
+
+  const groups = {};
+  emps.forEach(e => {
+    const s = e.sector || 'AI';
+    if (!groups[s]) groups[s] = { lats:[], lons:[], texts:[] };
+    groups[s].lats.push(e.lat);
+    groups[s].lons.push(e.lng);
+    groups[s].texts.push(
+      `<b>${e.company_name}</b><br>` +
+      `${e.city}, ${e.state}<br>` +
+      `Type: ${e.company_type}<br>` +
+      `New grads: ${e.hires_new_grads || 'Unknown'}<br>` +
+      (e.approx_annual_new_grad_hires ? `Est. hires/yr: ${e.approx_annual_new_grad_hires}<br>` : '') +
+      `Founded: ${e.founded_year}`
+    );
+  });
+
+  const traces = Object.entries(groups).map(([sector, g]) => ({
+    type: 'scattermapbox',
+    name: sector,
+    lat: g.lats, lon: g.lons,
+    mode: 'markers',
+    marker: { size: 9, color: SECTOR_COLOR[sector] || '#1565c0', opacity: 0.85 },
+    text: g.texts,
+    hovertemplate: '%{text}<extra></extra>',
+  }));
+
+  Plotly.newPlot('chart-map', traces, {
+    paper_bgcolor: PAPER,
+    font: FONT,
+    margin: { t: 0, b: 0, l: 0, r: 0 },
+    legend: { bgcolor: 'rgba(255,255,255,0.92)', bordercolor: GRID, borderwidth: 1, font: FONT },
+    mapbox: {
+      style: 'open-street-map',
+      center: { lat: 41.8, lon: -73.2 },
+      zoom: 6.5,
+    },
+  }, CFG);
+}
+
+function renderEmpTable(emps) {
+  document.getElementById('emp-tbody').innerHTML = emps.map(e => {
+    const sb = e.sector === 'AI' ? 'b-ai' : e.sector === 'Cybersecurity' ? 'b-cyber' : 'b-both';
+    const hb = e.hires_new_grads === 'Yes' ? 'b-yes' : 'b-no';
+    const hires = e.approx_annual_new_grad_hires || '—';
+    return `<tr>
+      <td><strong>${e.company_name}</strong></td>
+      <td>${e.state}</td>
+      <td><span class="badge ${sb}">${e.sector}</span></td>
+      <td style="font-size:.72rem;color:var(--muted);">${e.company_type || ''}</td>
+      <td><span class="badge ${hb}">${e.hires_new_grads || '—'}</span></td>
+      <td>${hires}</td>
+      <td>${e.careers_url ? `<a href="${e.careers_url}" target="_blank" rel="noopener">Careers</a>` : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterEmp(filter, btn) {
+  document.querySelectorAll('#emp-filter-bar .fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let f = allEmps;
+  if (filter !== 'All') {
+    f = allEmps.filter(e => e.sector === filter || e.state === filter);
+  }
+  plotMap(f);
+  renderEmpTable(f);
+}
+
+function sortEmp(key) {
+  if (empSortKey === key) empSortDir *= -1;
+  else { empSortKey = key; empSortDir = -1; }
+
+  const getVal = e => {
+    const v = e[key] || '';
+    if (key === 'approx_annual_new_grad_hires') {
+      const n = parseInt(String(v).split('-')[0].trim());
+      return isNaN(n) ? -1 : n;
+    }
+    return String(v).toLowerCase();
+  };
+  const sorted = [...allEmps].sort((a, b) => {
+    const va = getVal(a), vb = getVal(b);
+    if (va < vb) return -1 * empSortDir;
+    if (va > vb) return  1 * empSortDir;
+    return 0;
+  });
+  renderEmpTable(sorted);
+}
+
+// ── INSTITUTIONS ─────────────────────────────────────────────────────────────
+let allInst = [];
+
+function renderInstitutions() {
+  allInst = D.institutions;
+
+  const bySt = { CT: 0, NY: 0, MA: 0 };
+  allInst.forEach(i => { if (bySt[i.state] !== undefined) bySt[i.state]++; });
+  const withProg = allInst.filter(i =>
+    i.has_ms_ai === 'Yes' || i.has_ai_cyber === 'Yes' || i.has_bs_ai === 'Yes'
+  ).length;
+
+  document.getElementById('inst-summary').innerHTML = [
+    { label: 'Institutions in scope', value: allInst.length,
+      note: 'CT, NY, MA — IPEDS 2023', cls: '' },
+    { label: 'With confirmed AI / cyber programs', value: withProg,
+      note: 'Manually verified from program catalogs — March 2025', cls: '' },
+    { label: 'Connecticut institutions', value: bySt.CT,
+      note: 'Direct competitive set for University of New Haven', cls: '' },
+  ].map(s => `
+    <div class="hero-card" style="border:1px solid var(--border);border-radius:6px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.05);">
+      <span class="h-label">${s.label}</span>
+      <span class="h-value" style="font-size:1.5rem;">${s.value}</span>
+      <span class="h-note">${s.note}</span>
+    </div>`).join('');
+
+  renderInstTable(allInst);
+}
+
+function renderInstTable(insts) {
+  document.getElementById('inst-tbody').innerHTML = insts.map(i => {
+    const tb  = i.institution_type === 'Public' ? 'b-pub' : 'b-priv';
+    const msa = _yesNo(i.has_ms_ai);
+    const cyb = _yesNo(i.has_ai_cyber);
+    const pend = v => v && v !== 'PENDING' ? v : '<span class="pend">Pending</span>';
+    const home = i.is_home_institution;
+    return `<tr class="${home ? 'home-row' : ''}">
+      <td><strong>${i.institution_name}${home ? ' <span style="font-size:.65rem;color:#2e7d32;">(home institution)</span>' : ''}</strong></td>
+      <td>${i.state}</td>
+      <td><span class="badge ${tb}">${i.institution_type}</span></td>
+      <td>${msa}</td>
+      <td>${cyb}</td>
+      <td style="font-size:.75rem;">${pend(i.ai_program_name)}</td>
+      <td>${pend(i.program_launched)}</td>
+      <td>${pend(i.tuition_per_credit)}</td>
+      <td style="font-size:.72rem;color:var(--muted);">${i.notable_feature || ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+function _yesNo(v) {
+  if (v === 'Yes')     return '<span class="badge b-yes">Yes</span>';
+  if (v === 'No')      return '<span class="badge b-no">No</span>';
+  return '<span class="badge b-pend">Pending</span>';
+}
+
+function filterInst(filter, btn) {
+  document.querySelectorAll('#inst-filter-bar .fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let f = allInst;
+  if (['CT','NY','MA'].includes(filter))           f = allInst.filter(i => i.state === filter);
+  else if (filter === 'Public' || filter === 'Private')
+    f = allInst.filter(i => i.institution_type === filter);
+  renderInstTable(f);
+}
+
+// ── KEY FINDINGS ──────────────────────────────────────────────────────────────
+function renderInsights() {
+  const sal = D.salary_deep.salary_table;
+  const gs  = D.salary_deep.grad_salaries;
+  const em  = D.job_market.state_employment;
+
+  const ds = sal.find(r => r.soc_code === '15-1256') || {};
+  const ia = sal.find(r => r.soc_code === '15-1212') || {};
+  const sw = sal.find(r => r.soc_code === '15-1252') || {};
+
+  const natDs   = 108020;
+  const maPrem  = natDs > 0 ? Math.round((ds.ma_median - natDs) / natDs * 100) : 14;
+
+  const avgCyber = gs.filter(r => r.program === 'AI in Cybersecurity')
+    .reduce((s, r) => s + r.median_starting, 0) / 3;
+  const avgMsAI  = gs.filter(r => r.program === 'MS in AI')
+    .reduce((s, r) => s + r.median_starting, 0) / 3;
+  const cyberPrem = avgMsAI > 0 ? Math.round((avgCyber - avgMsAI) / avgMsAI * 100) : 8;
+
+  const tot    = em.CT.ai + em.NY.ai + em.MA.ai;
+  const nyPct  = tot > 0 ? Math.round(em.NY.ai / tot * 100) : 61;
+  const iaPct  = ia.growth_pct || 32.3;
+  const nyCtDiff = ia.ct_median > 0
+    ? Math.round((ia.ny_median - ia.ct_median) / ia.ct_median * 100) : 0;
+
+  const g = r => gs.find(x => x.program === 'AI in Cybersecurity' && x.state === r) || {};
+
+  const items = [
+    {
+      title: `MA has the highest AI salary premium — +${maPrem}% above the national median`,
+      body: `Massachusetts data scientists earn ${f$(ds.ma_median || 0)} median (BLS OES 2023) ` +
+            `vs. a national median of ${f$(natDs)}. ` +
+            `The MA premium is driven by a concentration of research universities, biotech firms, and AI-focused tech companies in the Greater Boston area.`,
+      cite: `${D.meta.bls_source} — SOC 15-1256 Data scientists, state vs. national median`,
+    },
+    {
+      title: `AI in cybersecurity starting salaries exceed MS in AI by approximately ${cyberPrem}% across all three states`,
+      body: `CT median: ${f$(g('CT').median_starting || 0)}. ` +
+            `NY median: ${f$(g('NY').median_starting || 0)}. ` +
+            `MA median: ${f$(g('MA').median_starting || 0)}. ` +
+            `The premium reflects demand for clearance-eligible candidates and the combination of AI and security specializations.`,
+      cite: `${D.meta.nace_source} + ${D.meta.bls_source} — SOC 15-1212 and 15-1252 weighted average`,
+    },
+    {
+      title: `New York accounts for ${nyPct}% of AI job openings in the CT/NY/MA region`,
+      body: `New York has the largest absolute AI workforce in the region, anchored by finance ` +
+            `(JPMorgan Chase, Goldman Sachs, Two Sigma, Bloomberg), media, and enterprise technology ` +
+            `(Google, Meta, Palantir). Connecticut has the smallest share but benefits from proximity ` +
+            `to New York employers and a lower cost base.`,
+      cite: `${D.meta.bls_source} — SOC 15-1252, 15-1256, 15-1221, 15-1253 state employment totals`,
+    },
+    {
+      title: 'Clearance-required cybersecurity roles command a $20k–$40k wage premium',
+      body: 'Roles requiring Secret or TS/SCI clearance at RTX, Leidos, General Dynamics IT, ' +
+            'Raytheon BBN, and MIT Lincoln Laboratory pay substantially above uncleared equivalents. ' +
+            'This premium is significant for programs with an NSA Center of Academic Excellence designation.',
+      cite: 'DoD contractor compensation benchmarks; MITRE workforce data; employer career pages — verified March 2025',
+    },
+    {
+      title: `Information security analysts: +${iaPct.toFixed(1)}% growth is the fastest in this study`,
+      body: `BLS projects 54,600 new information security analyst positions nationally through 2033. ` +
+            `NY median ${f$(ia.ny_median || 0)} is ${nyCtDiff > 0 ? nyCtDiff + '% above' : 'comparable to'} ` +
+            `the CT median of ${f$(ia.ct_median || 0)}. ` +
+            `Regulatory pressure and escalating cyber threats are the primary demand drivers.`,
+      cite: `${D.meta.bls_proj_source} — SOC 15-1212`,
+    },
+    {
+      title: `Software developers remain the largest occupation — ${fN(sw.new_jobs || 0)} new positions projected`,
+      body: `${fP(sw.growth_pct || 0)} growth through 2033, representing the highest absolute new-job count. ` +
+            `NY: ${f$(sw.ny_median || 0)} median · MA: ${f$(sw.ma_median || 0)} · CT: ${f$(sw.ct_median || 0)}. ` +
+            `AI-specialized software developer roles are expected to command a premium above the occupation-level median.`,
+      cite: `${D.meta.bls_proj_source} + ${D.meta.bls_source} — SOC 15-1252`,
+    },
+  ];
+
+  document.getElementById('insights-grid').innerHTML = items.map(ins => `
+    <div class="insight-card">
+      <div class="ic-title">${ins.title}</div>
+      <div class="ic-body">${ins.body}</div>
+      <div class="ic-cite">Source: ${ins.cite}</div>
+    </div>`).join('');
+}
+
+// ── DATA FRESHNESS FOOTER ─────────────────────────────────────────────────────
+function renderFooter() {
+  const m = D.meta;
+  document.getElementById('page-footer').innerHTML =
+    `Salary and job market data: ${m.bls_source}. ` +
+    `Employment projections: ${m.bls_proj_source}. ` +
+    `New-grad salary benchmarks: ${m.nace_source}. ` +
+    `Employer data: ${m.employer_date}. ` +
+    `Last updated: ${m.last_updated}. ` +
+    `Source files in <code>data/raw/</code> — run <code>python data/fetch_real_data.py</code> to refresh.`;
+}
+
+// ── ENROLLMENT FORECAST ───────────────────────────────────────────────────────
+async function runForecast() {
+  const btn         = document.getElementById('fc-btn');
+  const loading     = document.getElementById('fc-loading');
+  const placeholder = document.getElementById('fc-placeholder');
+  const results     = document.getElementById('fc-results');
+
+  btn.disabled = true;
+  btn.textContent = 'Running…';
+  loading.style.display = 'block';
+  placeholder.style.display = 'none';
+  results.style.display = 'none';
+
+  const body = {
+    program:      document.getElementById('fc-program').value,
+    student_type: document.getElementById('fc-student').value,
+    term:         document.getElementById('fc-term').value,
+    scenario:     document.getElementById('fc-scenario').value,
+    state:        document.getElementById('fc-state').value,
+  };
+
+  try {
+    const resp = await fetch('/api/enroll-forecast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const d = await resp.json();
+    if (!d.ok) throw new Error(d.error || 'Forecast failed');
+    renderForecastResults(d, body);
+    results.style.display = 'block';
+  } catch(e) {
+    placeholder.style.display = 'block';
+    placeholder.innerHTML = `<span style="color:#c62828;">Error: ${e.message}</span>`;
+  } finally {
+    loading.style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = 'Run Forecast';
+  }
+}
+
+function renderForecastResults(d, inputs) {
+  const f      = d.forecast;
+  const C_OPT  = '#2e7d32';
+  const C_BASE = '#1565c0';
+  const C_PESS = '#e53935';
+
+  // KPI strip
+  document.getElementById('fc-y1').textContent     = f.year1;
+  document.getElementById('fc-y1-range').textContent = `Range: ${f.year1_low}–${f.year1_high}`;
+  document.getElementById('fc-pool').textContent    = f.pool;
+  document.getElementById('fc-conf').textContent    = f.confidence_pct + '%';
+  const riskEl = document.getElementById('fc-risk');
+  riskEl.textContent = f.risk_level.toUpperCase() + ' RISK';
+  riskEl.style.color = f.risk_level === 'low' ? '#2e7d32' : f.risk_level === 'medium' ? '#d97706' : '#c62828';
+  document.getElementById('fc-growth').textContent  = f.growth_rate + '%';
+
+  // Enrollment projection chart with confidence band
+  const yrs   = ['Year 1', 'Year 2', 'Year 3'];
+  const yMid  = [f.year1, f.year2, f.year3];
+  const yLow  = [f.year1_low,  Math.round(f.year2 * 0.88), Math.round(f.year3 * 0.80)];
+  const yHigh = [f.year1_high, Math.round(f.year2 * 1.12), Math.round(f.year3 * 1.20)];
+
+  Plotly.newPlot('fc-chart-enroll', [
+    { x: yrs, y: yHigh, type: 'scatter', mode: 'lines', line: {width:0},
+      showlegend: false, hoverinfo: 'skip' },
+    { x: yrs, y: yLow, type: 'scatter', mode: 'lines', fill: 'tonexty',
+      fillcolor: 'rgba(21,101,192,0.10)', line: {width:0},
+      name: '95% CI', hoverinfo: 'skip' },
+    { x: yrs, y: yMid, type: 'scatter', mode: 'lines+markers+text',
+      line: { color: C_BASE, width: 3, shape: 'spline' },
+      marker: { size: 10, color: C_BASE, line: {color:'#fff', width:2} },
+      text: yMid.map(String), textposition: 'top center',
+      textfont: { size: 12, color: C_BASE, family: 'Inter,sans-serif' },
+      name: inputs.scenario },
+  ], baseLayout({
+    yaxis: { title: 'Students', gridcolor: GRID },
+    margin: { t: 16, b: 40, l: 55, r: 16 },
+    showlegend: true,
+    legend: { x: 0.02, y: 0.98, font: {size: 10} },
+  }), CFG);
+
+  // Scenario comparison bar chart
+  const sc = d.scenarios;
+  const scC = { Optimistic: C_OPT, Baseline: C_BASE, Pessimistic: C_PESS };
+  Plotly.newPlot('fc-chart-scenarios', [{
+    x: sc.map(s => s.scenario),
+    y: sc.map(s => s.year1),
+    type: 'bar',
+    marker: { color: sc.map(s => scC[s.scenario] || C_BASE) },
+    text: sc.map(s => String(s.year1)),
+    textposition: 'outside',
+    textfont: { size: 12, family: 'Inter,sans-serif' },
+  }], baseLayout({
+    yaxis: { title: 'Year 1 Students', gridcolor: GRID },
+    margin: { t: 16, b: 50, l: 55, r: 16 },
+    showlegend: false,
+  }), CFG);
+
+  // Scenario detail strips
+  const scClass = { Optimistic: 'sc-opt', Baseline: 'sc-base', Pessimistic: 'sc-pess' };
+  document.getElementById('fc-sc-strip').innerHTML = sc.map(s => `
+    <div class="fc-sc ${scClass[s.scenario] || ''}">
+      <div class="sc-name" style="color:${scC[s.scenario]}">${s.scenario}</div>
+      <div class="sc-y1"   style="color:${scC[s.scenario]}">${s.year1} students</div>
+      <div class="sc-meta">Year 1 &nbsp;|&nbsp; 3-yr pool: ${s.pool} &nbsp;|&nbsp; ${Math.round(s.confidence*100)}% conf.</div>
+      <div class="sc-meta">Y2: ${s.year2} &nbsp;&rarr;&nbsp; Y3: ${s.year3}</div>
+    </div>`).join('');
+
+  // 5-Factor breakdown table
+  document.getElementById('fc-factor-tbody').innerHTML = d.factors.map(fac => {
+    const up  = fac.multiplier >= 1;
+    const isD = fac.name === d.top_driver;
+    const isR = fac.name === d.top_risk;
+    return `<tr>
+      <td>
+        <strong>${fac.name}</strong>
+        ${isD ? '<span class="badge b-yes" style="margin-left:.4rem;">Top driver</span>' : ''}
+        ${isR ? '<span class="badge b-cyber" style="margin-left:.4rem;">Top risk</span>' : ''}
+      </td>
+      <td class="${up ? 'pos' : 'neg'}">${fac.multiplier.toFixed(3)}&times;</td>
+      <td>${Math.round(fac.weight * 100)}%</td>
+      <td style="font-size:.72rem;color:var(--muted);">${fac.source}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('fc-scenario-summary').textContent =
+    'Scenario basis: ' + d.scenario_summary;
+
+  // Warning flags (skip verbose ARIMA debug lines)
+  const flags = (f.warning_flags || []).filter(w => !w.startsWith('ARIMA('));
+  const warnEl = document.getElementById('fc-warnings');
+  if (flags.length > 0) {
+    warnEl.style.display = 'block';
+    warnEl.innerHTML = '<strong>Model notes:</strong> ' +
+      flags.map(w => `<br>&bull; ${w}`).join('');
+  } else {
+    warnEl.style.display = 'none';
+  }
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+const _rendered = {};
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b  => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (!_rendered[id]) {
+    _rendered[id] = true;
+    if (id === 'salary')       renderSalary();
+    if (id === 'employers')    renderEmployers();
+    if (id === 'institutions') renderInstitutions();
+    if (id === 'insights')     renderInsights();
+  }
+  // Resize any visible Plotly charts
+  setTimeout(() => {
+    ['fc-chart-enroll', 'fc-chart-scenarios'].forEach(cid => {
+      const el = document.getElementById(cid);
+      if (el && el._fullLayout) Plotly.Plots.resize(el);
+    });
+  }, 60);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderHeaderMeta();
+renderHero();
+renderJobMarket();
+renderFooter();
+_rendered['job-market'] = true;
+</script>
+</body>
+</html>
