@@ -638,9 +638,9 @@ def init_db():
             print("IMPORTANT: Change default password after first login!")
 
 
+# Initialize database when the application starts
+init_db()
+
 if __name__ == '__main__':
-    # Initialize database
-    init_db()
-    
     # Development server
     app.run(host='0.0.0.0', port=5000, debug=False)
