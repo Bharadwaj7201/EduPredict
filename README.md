@@ -1,5 +1,5 @@
 ````markdown
-EduPredict Pro
+#EduPredict Pro
 
 AI Degree Program Planning & Decision Intelligence Tool
 
@@ -17,7 +17,7 @@ https://github.com/Bharadwaj7201/EduPredict
 
 ---
 
-## Overview
+Overview
 
 EduPredict Pro is an end-to-end analytics and decision-intelligence platform designed to help higher-education decision makers evaluate potential AI degree programs.
 
@@ -35,11 +35,11 @@ The application is built with **Flask, Python, HTML/CSS/JavaScript, Plotly.js, a
 
 ---
 
-## What's Different
+What's Different
 
 EduPredict Pro focuses on combining quantitative forecasting with labor-market intelligence rather than relying on a single metric.
 
-### Key differentiators
+Key differentiators
 
 - **Production Flask Application** — Built with Flask and standard HTML/CSS/JavaScript rather than Streamlit
 - **Anthropic 2026 Research** — Incorporates AI labor-market research from the Anthropic Economic Index
@@ -50,7 +50,7 @@ EduPredict Pro focuses on combining quantitative forecasting with labor-market i
 
 ---
 
-## Live Deployment
+Live Deployment
 
 EduPredict Pro is deployed as a production Flask web application using Gunicorn.
 
