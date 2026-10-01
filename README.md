@@ -234,11 +234,11 @@ The platform can generate downloadable PDF reports containing analysis results.
 
 | Metric | Expected | Actual |
 |--------|----------|--------|
-| Year 1 Enrollment | 40 students | ✅ 40 |
-| 3-Year Enrollment | 131 students | ✅ 131 |
-| ROI | 3.43x | ✅ 3.43x |
-| AI Exposure | 65% | ✅ Data Scientists |
-| Demand Score | 80/100 | ✅ 80 |
+| Year 1 Enrollment | 40 students | 40 |
+| 3-Year Enrollment | 131 students | 131 |
+| ROI | 3.43x | 3.43x |
+| AI Exposure | 65% | Data Scientists |
+| Demand Score | 80/100 | 80 |
 
 The application validates **162 program-market combinations** across supported programs, student populations, states, launch terms, and scenarios.
 
