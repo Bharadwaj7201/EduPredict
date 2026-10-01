@@ -164,7 +164,6 @@ def log_activity(user_id, action, details=None):
 
 # Main Application Routes
 @app.route('/')
-@login_required
 def index():
     """Main dashboard page."""
     return render_template('index.html',
@@ -176,7 +175,6 @@ def index():
 
 
 @app.route('/api/forecast', methods=['POST'])
-@login_required
 def api_forecast():
     """API endpoint for enrollment forecast."""
     data = request.get_json()
@@ -221,30 +219,6 @@ def api_forecast():
     if roi.launch_recommendation == "delay":
         recommendation = "DO NOT LAUNCH"
         rec_class = "do-not-launch"
-    
-    # Log forecast to database
-    try:
-        history = ForecastHistory(
-            user_id=current_user.id,
-            program=program,
-            student_type=student_type,
-            term=term,
-            scenario=scenario,
-            state=state,
-            year1_enrollment=forecast.year1_enrollment,
-            projected_pool=forecast.projected_pool,
-            roi_ratio=roi.roi_ratio,
-            confidence=forecast.confidence_score,
-            recommendation=recommendation
-        )
-        db.session.add(history)
-        db.session.commit()
-        
-        # Log activity
-        log_activity(current_user.id, 'forecast', 
-                    f'{program} for {state} - {recommendation} (ROI: {roi.roi_ratio}x)')
-    except:
-        db.session.rollback()
     
     return jsonify({
         'success': True,
@@ -303,7 +277,6 @@ def api_forecast():
 
 
 @app.route('/api/scenarios', methods=['POST'])
-@login_required
 def api_scenarios():
     """Get all scenario comparisons."""
     data = request.get_json()
@@ -327,7 +300,6 @@ def api_scenarios():
 
 
 @app.route('/api/states', methods=['POST'])
-@login_required
 def api_states():
     """Get state comparison data."""
     data = request.get_json()
@@ -355,7 +327,6 @@ def api_states():
 
 
 @app.route('/api/validate')
-@login_required
 def api_validate():
     """Validate all 162 combinations."""
     results = []
@@ -398,7 +369,6 @@ def api_validate():
 
 
 @app.route('/api/ai-report/<program>')
-@login_required
 def api_ai_report(program):
     """Get AI exposure report for a program."""
     report = quick_ai_report(program)
@@ -412,7 +382,6 @@ def health():
 
 
 @app.route('/api/report', methods=['POST'])
-@login_required
 def api_report():
     """Generate and download PDF report."""
     if not FPDF_AVAILABLE:
