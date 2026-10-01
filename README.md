@@ -57,6 +57,15 @@ EduPredict Pro is deployed as a production Flask web application using Gunicorn.
 
 🚀 **EduPredict Pro:**  
 https://edupredict-b250.onrender.com/
+<p align="center">
+  <img src="edu1.png"  width="95%">
+</p>
+<p align="center">
+  <img src="edu2.png"  width="95%">
+</p>
+<p align="center">
+  <img src="edu3.png" alt="EduPredict Pro Recommendation Dashboard" width="95%">
+</p>
 
 ### Build Command
 
