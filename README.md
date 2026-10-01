@@ -222,6 +222,7 @@ Edupredict-Pro/
 ---
 
 ## Author
-Bharadwaj Gottimukkula - https://edupredict-b250.onrender.com/
+Bharadwaj Gottimukkula 
+Here is the live demo - https://edupredict-b250.onrender.com/
 
 Built for higher education leadership decision-making.
