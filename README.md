@@ -11,9 +11,9 @@ https://edupredict-b250.onrender.com/
 📦 **GitHub Repository:**  
 https://github.com/Bharadwaj7201/EduPredict
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
-![Flask](https://img.shields.io/badge/Flask-3.0-black?logo=flask)
-![License](https://img.shields.io/badge/License-MIT-green)
+[Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+[Flask](https://img.shields.io/badge/Flask-3.0-black?logo=flask)
+[License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
