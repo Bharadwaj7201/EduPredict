@@ -1,7 +1,3 @@
-Absolutely. I reviewed your **existing README** and kept its original terminology and project claims, while restructuring it for a cleaner, recruiter-facing GitHub presentation. I also updated the outdated GitHub/author information and added your current Render deployment.
-
-Below is the **finalized README.md** ready to replace your current file.
-
 ````markdown
 # EduPredict Pro
 
