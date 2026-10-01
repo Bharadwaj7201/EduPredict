@@ -1,5 +1,5 @@
 ````markdown
-#EduPredict Pro
+##EduPredict Pro
 
 AI Degree Program Planning & Decision Intelligence Tool
 
