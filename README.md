@@ -222,7 +222,6 @@ Edupredict-Pro/
 ---
 
 ## Author
-
-**Ganesh Munagala** — [GitHub](https://github.com/GaneshMunagala714) | [Portfolio](https://ganeshmunagala714.github.io/Ganesh-Portfolio)
+Bharadwaj Gottimukkula - https://edupredict-b250.onrender.com/
 
 Built for higher education leadership decision-making.
