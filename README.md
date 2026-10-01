@@ -1,7 +1,7 @@
 ````markdown
 # EduPredict Pro
 
-**AI Degree Program Planning & Decision Intelligence Tool**
+AI Degree Program Planning & Decision Intelligence Tool
 
 A professional decision-support platform for evaluating AI degree-program opportunities using enrollment forecasting, scenario analysis, ROI modeling, labor-market intelligence, and AI exposure analysis.
 
