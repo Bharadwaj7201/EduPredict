@@ -2,7 +2,11 @@
 
 **AI Degree Program Planning & Decision Intelligence Tool**
 
-A professional dashboard for College Deans to evaluate launching AI degree programs. Built with **Flask** (no Streamlit), HTML/CSS/JS, and Plotly.js.
+A professional decision-support platform for evaluating AI degree-program opportunities using enrollment forecasting, scenario analysis, ROI modeling, labor-market intelligence, and AI exposure analysis.
+
+🚀 **Live Demo:** https://edupredict-b250.onrender.com
+
+📦 **GitHub:** https://github.com/Bharadwaj7201/EduPredict
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
 ![Flask](https://img.shields.io/badge/Flask-3.0-black?logo=flask)
@@ -25,11 +29,13 @@ Unlike other AI education tools, EduPredict:
 
 | Layer | Technology |
 |-------|-----------|
-| **Backend** | Flask + Gunicorn |
-| **Frontend** | HTML5, CSS3, Vanilla JS |
-| **Charts** | Plotly.js (3D surfaces, interactive) |
-| **Data** | Pandas, NumPy |
-| **Deployment** | AWS EC2, Docker, Gunicorn |
+| **Backend** | Python, Flask, Gunicorn |
+| **Frontend** | HTML5, CSS3, JavaScript |
+| **Charts** | Plotly.js |
+| **Data & Modeling** | Pandas, NumPy, Statsmodels |
+| **Database** | SQLite, SQLAlchemy |
+| **Reporting** | FPDF2 |
+| **Deployment** | GitHub + Render + Gunicorn |
 
 ---
 
@@ -45,100 +51,22 @@ python app.py
 Open: `http://localhost:5000`
 
 ---
+## Live Deployment
 
-## Deploy to AWS EC2 (Student Account)
+EduPredict Pro is deployed as a production Flask web service using Gunicorn.
 
-### 1. Start Your Lab
-- AWS Academy → Learner Lab → Start Lab
-- Make sure you're in **us-east-1** (N. Virginia)
+**Live Application:**  
+https://edupredict-b250.onrender.com
 
-### 2. Launch EC2 Instance
+### Production Start Command
 
-**EC2** → **Launch Instance**
-
-| Setting | Value |
-|---------|-------|
-| Name | `edupredict-pro` |
-| AMI | Ubuntu Server 24.04 LTS |
-| Type | t2.micro (Free tier) |
-| Key pair | Create new or select |
-
-**Security Group:**
-- SSH (port 22) - My IP
-- HTTP (port 80) - 0.0.0.0/0
-
-**Advanced Details → User Data:**
 ```bash
-#!/bin/bash
-exec > /var/log/edupredict-deploy.log 2>&1
-set -e
+gunicorn -w 2 -b 0.0.0.0:$PORT app:app
 
-echo "=== EduPredict Pro Flask Auto-Deploy ==="
+Build Command : pip install -r requirements.txt
 
-apt-get update -y
-apt-get install -y python3 python3-pip git nginx
 
-cd /home/ubuntu
-git clone https://github.com/GaneshMunagala714/Edupredict-Pro.git
-cd Edupredict-Pro
 
-pip3 install --break-system-packages -r requirements.txt
-
-cat > /etc/systemd/system/edupredict.service <<'EOF'
-[Unit]
-Description=EduPredict Pro Flask App
-After=network.target
-
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu/Edupredict-Pro
-ExecStart=/usr/bin/python3 -m gunicorn -w 2 -b 0.0.0.0:5000 app:app
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-cat > /etc/nginx/sites-available/edupredict <<'EOF'
-server {
-    listen 80;
-    server_name _;
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-EOF
-
-rm -f /etc/nginx/sites-enabled/default
-ln -sf /etc/nginx/sites-available/edupredict /etc/nginx/sites-enabled/
-
-chown -R ubuntu:ubuntu /home/ubuntu/Edupredict-Pro
-
-systemctl daemon-reload
-systemctl enable edupredict
-systemctl start edupredict
-systemctl restart nginx
-
-echo "=== DEPLOY COMPLETE ==="
-echo "App URL: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
-```
-
-### 3. Access Your App
-
-Wait **3-5 minutes**, then visit:
-```
-http://<YOUR-EC2-PUBLIC-IP>
-```
-
-No port number needed (port 80).
-
----
-
-## Project Structure
 
 ```
 Edupredict-Pro/
@@ -157,18 +85,18 @@ Edupredict-Pro/
 └── AWS-DEPLOY.md              # Detailed deployment guide
 ```
 
----
-
 ## API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | Main dashboard |
-| `/api/forecast` | POST | Generate enrollment forecast |
-| `/api/scenarios` | POST | Compare all scenarios |
-| `/api/states` | POST | Compare all states |
+| `/api/forecast` | POST | Generate enrollment forecast, ROI, and market analysis |
+| `/api/scenarios` | POST | Compare forecasting scenarios |
+| `/api/states` | POST | Compare state-level market conditions |
 | `/api/validate` | GET | Validate all 162 combinations |
-| `/health` | GET | Health check |
+| `/api/ai-report/<program>` | GET | Generate AI exposure analysis |
+| `/api/report` | POST | Generate downloadable PDF report |
+| `/health` | GET | Application health check |
 
 ---
 
